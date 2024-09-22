@@ -11,7 +11,7 @@
     -	Assign task to members
     -	Set due dates for tasks
     -	Update task status
-  -	Track overall progress
+    -	Track overall progress
 3.	User Authentication
     -	Create user accounts
     -	Log in securely
@@ -28,3 +28,6 @@
     -	Stores documents
     -	Search specific files
     -	Share files with team members
+
+## GANNT CHART
+https://docs.google.com/spreadsheets/d/1W2hgfdnKMasCNmSm3KWsLB5mxhEam_y5x_Lwz0peb0U/edit?usp=sharing
