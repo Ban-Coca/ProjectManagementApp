@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Project Name</h1>
+        <div class="actions">
+            <button id="addTaskBtn">+ Add Task</button>
+            <div class="search-filter">
+                <input type="text" id="searchInput" placeholder="Search tasks...">
+                <button id="searchBtn">Search</button>
+                <button id="filterBtn">Filter</button>
+            </div>
+        </div>
+        
+        {% include "task_management/tasks_table.html" %}
+    </div>
+
+    {% include "task_management/add_tasks.html" %}
+
+    <script src="{% static 'javascript/task_management.js' %}"></script>
+</body>
+</html>

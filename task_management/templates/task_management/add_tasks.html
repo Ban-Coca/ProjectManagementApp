@@ -1,0 +1,24 @@
+<div id="addTaskModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add New Task</h2>
+        <form id="addTaskForm">
+            <input type="text" id="taskTitle" placeholder="Task Title" required>
+            <textarea id="taskDescription" placeholder="Task Description" required></textarea>
+            <select id="taskStatus" required>
+                <option value="">Select Status</option>
+                <option value="TODO">To Do</option>
+                <option value="INPROGRESS">In Progress</option>
+                <option value="DONE">Done</option>
+            </select>
+            <select id="taskPriority" required>
+                <option value="">Select Priority</option>
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+            </select>
+            <input type="date" id="taskDueDate" required>
+            <button type="submit">Add Task</button>
+        </form>
+    </div>
+</div>
