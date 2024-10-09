@@ -8,7 +8,7 @@ class Tasks(models.Model):
         ("DONE", "Done")
     ]
 
-    PRIOTITY = [
+    PRIORITY = [
         ("LOW", "Low"),
         ("MEDIUM", "Medium"),
         ("HIGH", "High")
@@ -19,7 +19,7 @@ class Tasks(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS)
-    priority = models.CharField(max_length=20, choices=PRIOTITY)
+    priority = models.CharField(max_length=20, choices=PRIORITY)
     due_date = models.DateField()
     created_by = models.CharField(max_length=20)
     assigned_to = models.CharField(max_length=20)

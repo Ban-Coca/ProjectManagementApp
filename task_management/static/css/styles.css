@@ -5,7 +5,7 @@ body {
     background-color: #f0f0f0;
 }
 .container {
-    background-color: white;
+    background-color: #D9D9D9;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -22,15 +22,17 @@ h1 {
     display: flex;
     gap: 10px;
 }
-input, button, select, textarea {
-    padding: 8px 12px;
+input, select, textarea {
+    padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 button {
     background-color: #007bff;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     color: white;
-    border: none;
     cursor: pointer;
 }
 button:hover {
@@ -45,8 +47,17 @@ th, td {
     padding: 12px;
     border-bottom: 1px solid #ddd;
 }
+td{
+    background-color: #F2F2F2;
+}
 th {
-    background-color: #f8f9fa;
+    background-color: #A9A6A6;
+}
+th:first-child {
+    border-radius: 4px 0 0 4px;
+}
+th:last-child {
+    border-radius: 0 4px 4px 0;
 }
 .priority {
     padding: 4px 8px;
@@ -58,6 +69,7 @@ th {
 .priority-low { background-color: #28a745; }
 
 /* Modal styles */
+
 .modal {
     display: none;
     position: fixed;
@@ -69,9 +81,10 @@ th {
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
 }
+
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 10% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;

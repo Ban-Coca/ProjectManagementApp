@@ -19,25 +19,40 @@ function renderTasks(tasks) {
         return;
     }
 
-    const tbody = document.querySelector('#taskTable tbody');
-    if (!tbody) {
+    const todoTableBody = document.querySelector('#todoTable tbody');
+    const inProgressTableBody = document.querySelector('#inProgressTable tbody');
+    const doneTableBody = document.querySelector('#doneTable tbody');
+
+    if (!todoTableBody || !inProgressTableBody || !doneTableBody) {
         console.error('Could not find tbody element in the table');
         return;
     }
 
-    tbody.innerHTML = '';
+    todoTableBody.innerHTML = '';
+    inProgressTableBody.innerHTML = '';
+    doneTableBody.innerHTML = '';
+
     tasks.forEach(task => {
-        const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'N/A';
-        const row = `
-            <tr>
+        const dueDate = formatDate(task.due_date);
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
                 <td>${task.title}</td>
                 <td>${task.description}</td>
-                <td>${task.status}</td>
                 <td><span class="priority priority-${task.priority.toLowerCase()}">${task.priority}</span></td>
                 <td>${dueDate}</td>
-            </tr>
-        `;
-        tbody.innerHTML += row;
+            `;
+        row.id = `task-${task.id}`;
+        row.addEventListener('click', () => {
+            window.location.href = `/tasks/${task.id}/`;
+        })
+        if(task.status === 'TODO') {
+            todoTableBody.appendChild(row);
+        } else if(task.status === 'INPROGRESS') {
+            inProgressTableBody.appendChild(row);
+        } else if(task.status === 'DONE') {
+            doneTableBody.appendChild(row);
+        }
     });
 }
 
@@ -48,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             tasks = data;
-            renderTasks();
+            renderTasks(tasks);
         });
 
     const modal = document.getElementById('addTaskModal');
@@ -77,38 +92,32 @@ document.addEventListener('DOMContentLoaded', () => {
             description: document.getElementById('taskDescription').value,
             status: document.getElementById('taskStatus').value,
             priority: document.getElementById('taskPriority').value,
-            dueDate: document.getElementById('taskDueDate').value
+            dueDate: document.getElementById('taskDueDate').value,
+            assignee: document.getElementById('taskAssignee').value
         };
         
-        fetch('/api/tasks/', {
+        fetch('/tasks/add_task/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
             },
             body: JSON.stringify(newTask)
         })
         .then(response => response.json())
         .then(data => {
-            tasks.push(data);
-            renderTasks();
-            modal.style.display = "none";
-            addTaskForm.reset();
+            if(data.success) {
+                alert('Task added successfully');
+                document.getElementById('addTaskForm').reset();
+                document.getElementById('addTaskModal').style.display = 'none';
+                
+                location.reload();
+            }
         })
         .catch(error => console.error('Error:', error));
     }
-
-    // document.getElementById('searchBtn').addEventListener('click', () => {
-    //     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    //     const filteredTasks = tasks.filter(task => 
-    //         task.title.toLowerCase().includes(searchTerm) || 
-    //         task.description.toLowerCase().includes(searchTerm)
-    //     );
-    //     renderFilteredTasks(filteredTasks);
-    // });
-
-    document.getElementById('filterBtn').addEventListener('click', () => {
-        alert('Filter functionality would be implemented here');
-        // In a real app, this would open a filter modal or dropdown
-    });
 });
+
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
