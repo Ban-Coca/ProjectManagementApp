@@ -5,12 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign up your Account</title>
-    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}?v=1.0">
 </head>
 <body>
+    <div class="sidebar"></div> <!-- Optional Sidebar -->
     <div class="container">
-        <a href="#" class="back-link"></a>
-        <h1>Sign up your Account</h1>
+        <a href="{% url 'login' %}" class="back-link">&lt; Back</a>
+        <h3>Sign up your <br>Account</h3>
         <form method="POST">
             {% csrf_token %}
             <div class="row">
@@ -37,6 +38,7 @@
                 <label for="{{ form.email.id_for_label }}">Email</label>
                 {{ form.email }}
             </div>
+
             <div class="form-actions">
                 <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
                 <button type="submit" class="sign-up-btn">Sign up</button>

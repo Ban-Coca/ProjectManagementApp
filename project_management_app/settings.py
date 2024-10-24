@@ -129,4 +129,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Reset Forgotten Passwords
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-AUTH_USER_MODEL = 'user_authentication.CustomUser'
+AUTH_USER_MODEL = 'user_authentication.User'
