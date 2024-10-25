@@ -11,11 +11,11 @@
     <div class="container">
         <h1>Project Name</h1>
         <div class="actions">
-            <button id="addTaskBtn">+ Add Task</button>
+            <button id="addTaskBtn" class="addTaskBtn">+ Add Task</button>
             <div class="search-filter">
                 <input type="text" id="searchInput" placeholder="Search tasks...">
-                <button id="searchBtn">Search</button>
-                <button id="filterBtn">Filter</button>
+                <button id="searchBtn" class="searchBtn">Search</button>
+                <button id="filterBtn" class="filterBtn">Filter</button>
             </div>
         </div>
         
@@ -23,6 +23,8 @@
     </div>
 
     {% include "task_management/add_tasks.html" %}
+
+    {% include "task_management/tasks_details.html" %}
 
     <script src="{% static 'javascript/task_management.js' %}"></script>
 </body>
