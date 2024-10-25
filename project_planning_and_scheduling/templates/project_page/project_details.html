@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }} - Project Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
+</head>
+<body>
+{% block content %}
+    {% include 'project_page/searchbar.html' %}
+    <div class="under">
+        {% include 'project_page/sidebar.html' %}
+        <div class="main-content">
+            <h1>{{ project.title }}</h1>
+            <div class="project-nav">
+                <div class="nav-button">
+                    <a href="#" class="overview-button">Overview</a>
+                    <a href="#" class="list-button">Task List</a>
+                    <a href="#" class="board-button">Board</a>
+                </div>
+                <div class="task-button">
+                    <button id="createTaskBtn">+ Create Task</button>
+                </div>
+            </div>
+            <div class="overview">
+                <div class="project-description">
+                    <h2>Project Description</h2>
+                    <p>{{ project.description }}</p>
+                </div>
+                <div class="project-details">
+                    <div>
+                        <h3>Deadline</h3>
+                        <p>{{ project.end_date }}</p>
+                    </div>
+                    <div>
+                        <h3>Members</h3>
+                        <p>{{ project.owner.username }}</p>
+                        <div class="members">
+                            {% for member in members %}
+                                <span class="member">{{ member.user.username }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="tasks">
+                    <h3>Tasks</h3>
+                    <ul>
+                        {% for task in project.task_set.all %}
+                            <li>{{ task.title }} - {{ task.status }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+</body>
+</html>

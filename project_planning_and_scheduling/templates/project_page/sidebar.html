@@ -1,0 +1,17 @@
+<div class="sidebar">
+    {% load static %}
+    <nav>
+        <ul>
+            <li class="nav-container {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                <a href="{% url 'home' %}" class="nav-link">
+                    <img src="{% static 'images/home.png' %}" alt="Home" class="sidebar-icon"> Home
+                </a>
+            </li>
+            <li class="nav-container {% if request.resolver_match.url_name == 'projects_list' or request.resolver_match.url_name == 'project_detail' %}active{% endif %}">
+                <a href="{% url 'projects_list' %}" class="nav-link">
+                    <img src="{% static 'images/project.png' %}" alt="Projects" class="sidebar-icon"> Projects
+                </a>
+            </li>
+        </ul>                
+    </nav>
+</div>

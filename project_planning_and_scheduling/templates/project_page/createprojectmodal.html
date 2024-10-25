@@ -1,0 +1,22 @@
+<!-- Modal for Creating New Project -->
+<div id="projectModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h2>Create New Project</h2>
+        <form id="createProjectForm" action="{% url 'create_project' %}" method="POST">
+            {% csrf_token %}
+            <label for="projectTitle">Project Title:</label>
+            <input type="text" id="projectTitle" name="projectTitle" required><br><br>
+
+            <label for="projectDescription">Description:</label>
+            <textarea id="projectDescription" name="projectDescription" required></textarea><br><br>
+
+            <label for="projectDeadline">Deadline:</label>
+            <input type="date" id="projectDeadline" name="projectDeadline" required><br><br>
+
+            <div class="button-container">
+                <button type="submit">Create Project</button>
+            </div>
+        </form>
+    </div>
+</div>

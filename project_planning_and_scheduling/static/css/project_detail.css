@@ -1,0 +1,193 @@
+/* Ensure body and html take full height */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.search-box {
+    display: flex;
+    justify-content: flex-start; /* Align items to the start */
+    align-items: center; /* Center items vertically */
+    padding: 10px; /* Adjust padding */
+    background-color: #D9D9D9; /* Background color for the search bar */
+    width: 100%; /* Full width */
+    position: fixed; /* Stay at the top even when scrolling */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Keep the search bar above other elements */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for better visibility */
+}
+
+.search-bar {
+    width: 40%; /* Adjust this based on how wide you want the search bar */
+    padding: 10px 40px; /* Space for text and icon */
+    background-color: #A49898; /* Set a color to check visibility */
+    color: black;
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    margin-left: 450px; /* Center the search bar */
+    margin-right: 10px; /* Space between search bar and notification icon */
+
+    /* Background image for the search icon */
+    background-image: url('/static/images/search.png'); /* Use the correct path */
+    background-repeat: no-repeat; /* Prevent repeating of the icon */
+    background-position: 10px center; /* Position the icon inside the input */
+    background-size: 20px 20px; /* Adjust the size of the icon */
+}
+
+
+.search-bar::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.notification-icon {
+    width: 24px; /* Icon size */
+    height: 24px; /* Icon size */
+    cursor: pointer; /* Change cursor to pointer */
+    margin-left: auto; /* Push the icon to the right */
+    margin-right: 30px;
+}
+
+.sidebar nav{
+    margin-top: 20px;
+}
+
+.sidebar ul {
+    height: auto;
+}
+
+.sidebar {
+    margin-top: 57px;
+    width: 228px;
+    background-color: #A49898 !important; /* Force the background color */
+    height: calc(100.40vh - 60px); /* Full height minus search bar height */
+    display: flex; /* Enable flexbox */
+    flex-direction: column; /* Stack children vertically */
+}
+
+.nav-container {
+    display: flex; /* Use flexbox */
+    /*justify-content: flex-start; /* Align items to the left */
+    align-items: center; /* Center vertically */
+    width: 140px;
+    height: auto; /* Set height to auto */
+    margin-bottom: 20px; /* Add space below the home link */
+}
+
+.nav-link {
+    text-decoration: none; /* Removes the underline from links */
+    color: black; /* Ensures link color inherits from parent */
+    font-size: 18px; /* Adjust the font size */
+    padding: 10px; /* Add some padding */
+    
+}
+
+.nav-container.active {
+    border-radius: 10px;
+    background-color: #c8c8c8; /* Color for the active state */
+}
+
+.nav-container:hover {
+    border-radius: 10px; /* Optional: Add rounded corners */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    background-color: #d0d0d0; /* Change background color on hover */
+}
+
+.under {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row; /* Ensure the sidebar and main content are in a row */
+    height: 60vh;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f5f5f5;
+    margin-top: 60px;
+    height: calc(98vh - 90px); /* Adjust height considering the search box */
+}
+.overview {
+    background-color: #e0e0e0;
+    height: 69vh;
+    border-radius: 5px;
+}
+
+.overview-button,
+.list-button,
+.board-button {
+    text-decoration: none; 
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    color: black;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.overview-button:hover,
+.list-button:hover,
+.board-button:hover {
+    background-color: #d0d0d0; /* Change color on hover */
+}
+
+.project-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-button {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+/* Project description */
+.project-description {
+    padding: 5px;
+    margin-left: 15px;
+    margin-bottom: 20px;
+}
+
+.project-details {
+    display: flex;
+    gap: 180px;
+    margin-left: 20px;
+}
+
+.members {
+    display: flex;
+    gap: 10px;
+}
+
+.member {
+    background-color: #d0d0d0;
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+
+.tasks {
+    margin-left: 20px;
+}
+
+.sidebar-icon {
+    width: 20px;  /* Adjust width as needed */
+    height: 20px; /* Adjust height as needed */
+    margin-right: 8px; /* Space between the icon and text */
+    vertical-align: middle; /* Align icon vertically with text */
+    display: inline-block; /* Ensure it behaves like inline elements */
+}
+
+button {
+    background-color: #A49898; /* Button color */
+    color: #fff; /* Text color */
+    padding: 10px 15px; /* Padding */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #b0a8a8; /* Darker shade on hover */
+}
