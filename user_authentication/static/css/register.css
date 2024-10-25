@@ -10,7 +10,7 @@ body {
 
 .sidebar {
     background-color: #A49898; /* Color for the left sidebar */
-    width: 70vh; /* Width of the sidebar */
+    width: 40%; /* Width of the sidebar */
     height: 100vh; /* Full height of the viewport */
     position: fixed; /* Fixed sidebar */
     left: 0; /* Align to the left */
@@ -21,7 +21,7 @@ body {
     background-color: #FEF7FF; /* Light background color */
     padding: 40px;
     border-radius: 12px; /* Rounded corners */
-    height: 550px;
+    min-height: 500px;
     width: 500px; /* Set a fixed width for the container */
     margin-left: 67%; /* Position it to the right */
     position: relative; /* For positioning */
@@ -31,7 +31,7 @@ body {
 
 h3 {
     font-size: 50px;
-    margin-top: 30px; /* Margin at the top of the heading */
+    margin-top: 20px; /* Margin at the top of the heading */
 }
 
 .row {
@@ -54,7 +54,7 @@ label {
 
 input {
     width: 100%;
-    padding: 12px; /* Increased padding for a better touch */
+    padding: 8px; /* Increased padding for a better touch */
     border: 1px solid #ddd;
     border-radius: 8px; /* Rounded corners */
     box-sizing: border-box;
@@ -71,7 +71,7 @@ input:focus {
     display: flex;
     justify-content: space-between; /* Align 'Log in' and 'Sign up' side by side */
     align-items: center;
-    margin-top: 50px; /* Adjust the spacing above the button */
+    margin-top: 32px; /* Adjust the spacing above the button */
 }
 
 .sign-up-btn {
@@ -88,13 +88,20 @@ input:focus {
 
 .sign-up-btn:hover {
     background-color: #0099cc; /* Darker blue on hover */
+    color: white;
 }
 
 .back-link {
+    padding: 0.2rem 0.5rem;
     text-decoration: none;
     color: #000;
     font-size: 14px;
     margin-bottom: 20px;
+}
+.back-link:hover {
+    background-color: #949494;
+    color: white;
+    border-radius: 2px;
 }
 
 .form-actions a {
@@ -105,4 +112,32 @@ input:focus {
 .form-actions p {
     margin: 0; /* Remove margins to align with button */
     font-size: 14px;
+}
+
+.messages {
+    margin-bottom: 10px;
+}
+
+.alert {
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 4px;
 }

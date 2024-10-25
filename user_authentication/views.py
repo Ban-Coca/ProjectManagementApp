@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
+from django.db import transaction
+from django.template.loader import render_to_string
 
 def login_view(request):
     if request.method == 'POST':
@@ -26,12 +28,38 @@ def login_view(request):
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=user.username, password=raw_password)
-            auth_login(request, user)
-            return redirect('home')
+        try:
+            with transaction.atomic():
+                if form.is_valid():
+                    # Create the user but don't save to DB yet
+                    user = form.save(commit=False)
+                    
+                    # Add any additional fields
+                    user.first_name = form.cleaned_data.get('first_name')
+                    user.last_name = form.cleaned_data.get('last_name')
+                    
+                    # Save the user to the database
+                    user.save()
+                    
+                    # Get the raw password to authenticate
+                    raw_password = form.cleaned_data.get('password1')
+                    
+                    # Authenticate and login the user
+                    user = authenticate(username=user.username, password=raw_password)
+                    if user is not None:
+                        auth_login(request, user)
+                        messages.success(request, 'Registration successful!')
+                        print("Registration successful!")  # For debugging
+                        return redirect('login')
+                    else:
+                        messages.error(request, 'Failed to authenticate after registration.')
+                else:
+                    for field, errors in form.errors.items():
+                        for error in errors:
+                            messages.error(request, f"{field}: {error}")
+        except Exception as e:
+            messages.error(request, f'Registration failed: {str(e)}')
+            print(f"Registration error: {str(e)}")  # For debugging
     else:
         form = SignUpForm()
     return render(request, 'register.html', {'form': form})
@@ -58,3 +86,4 @@ def forgot_password(request):
         except User.DoesNotExist:
             messages.error(request, 'No user is associated with this email address.')
     return render(request, 'password_reset.html')  # Render the password reset template
+
