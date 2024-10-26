@@ -1,0 +1,64 @@
+<div class="sidebar">
+    {% load static %}
+    <nav>
+        <ul>
+            <li class="nav-container {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                <a href="{% url 'home:home' %}" class="nav-link">
+                    <img src="{% static 'images/home.png' %}" alt="Home" class="sidebar-icon"> Home
+                </a>
+            </li>
+            <li class="nav-container {% if request.resolver_match.url_name == 'projects_list' or request.resolver_match.url_name == 'project_detail' %}active{% endif %}">
+                <a href="{% url 'project_planning_and_scheduling:projects_list' %}" class="nav-link">
+                    <img src="{% static 'images/project.png' %}" alt="Projects" class="sidebar-icon"> Projects
+                </a>
+            </li>
+        </ul>                
+    </nav>
+</div>
+
+<style>
+    .sidebar nav{
+        margin-top: 20px;
+    }
+
+    .sidebar ul {
+        height: auto;
+    }
+
+    .sidebar {
+        margin-top: 57px;
+        width: 228px;
+        background-color: #A49898 !important; /* Force the background color */
+        height: calc(100.40vh - 60px); /* Full height minus search bar height */
+        display: flex; /* Enable flexbox */
+        flex-direction: column; /* Stack children vertically */
+    }
+
+    .nav-container {
+        display: flex; /* Use flexbox */
+        /*justify-content: flex-start; /* Align items to the left */
+        align-items: center; /* Center vertically */
+        width: 140px;
+        height: auto; /* Set height to auto */
+        margin-bottom: 20px; /* Add space below the home link */
+    }
+
+    .nav-link {
+        text-decoration: none; /* Removes the underline from links */
+        color: black; /* Ensures link color inherits from parent */
+        font-size: 18px; /* Adjust the font size */
+        padding: 10px; /* Add some padding */
+        
+    }
+
+    .nav-container.active {
+        border-radius: 10px;
+        background-color: #c8c8c8; /* Color for the active state */
+    }
+
+    .nav-container:hover {
+        border-radius: 10px; /* Optional: Add rounded corners */
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+        background-color: #d0d0d0; /* Change background color on hover */
+    }
+</style>

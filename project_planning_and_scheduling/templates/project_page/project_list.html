@@ -11,9 +11,9 @@
 </head>
 <body>
 {% block content %}
-    {% include 'project_page/searchbar.html' %}
+    {% include 'components/searchbar.html' %}
     <div class="under">
-        {% include 'project_page/sidebar.html' %}
+        {% include 'components/sidebar.html' %}
         <div class="main-content">
             <div class="header">
                 <h1>Project List</h1>
@@ -24,7 +24,7 @@
                     {% if projects %}
                         {% for project in projects %}
                             <div class="project-card">
-                                <a href="{% url 'project_detail' project.id %}">
+                                <a href="{% url 'project_planning_and_scheduling:project_detail' project.id %}">
                                     <div data-project-id="{{ project.id }}">  <!-- Add data-project-id -->
                                         <h3>{{ project.title }}</h3>
                                         <p>Deadline: {{ project.end_date }}</p>

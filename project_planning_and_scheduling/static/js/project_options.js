@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(response => {
                 if (response.ok) {
                     console.log('Project deleted successfully.');
-                    projectCard.remove(); // Remove the project card from the DOM
+                    location.reload(); // Refresh the page
                 } else {
                     throw new Error('Network response was not ok.');
                 }

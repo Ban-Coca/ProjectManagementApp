@@ -1,0 +1,171 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    display: flex;
+    justify-content: flex-start; /* Align items to the start (left) */
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+.sidebar {
+    background-color: #A49898; /* Color for the left sidebar */
+    width: 40%; /* Width of the sidebar */
+    height: 100vh; /* Full height of the viewport */
+    position: fixed; /* Fixed sidebar */
+    left: 0; /* Align to the left */
+    top: 0; /* Ensure it starts from the top */
+}
+
+.container {
+    background-color: #FEF7FF; /* Light background color */
+    padding: 40px;
+    border-radius: 12px; /* Rounded corners */
+    min-height: 500px;
+    width: 500px;
+    margin-left: 67%; /*Position it to the right */
+    position: relative; /* For positioning */
+    transform: translateX(-50%); /* Center the container horizontally */
+    outline: 1px solid #d6d6d6; /* Outline for the container */
+}
+
+h3 {
+    font-size: 50px;
+    margin-top: 30px; /* Margin at the top of the heading */
+}
+
+.welcome-title {
+    font-size: 15px; /* Title font size */
+    color: #555; /* Slightly darker color for the title */
+    margin-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Align label above input */
+}
+
+.form-group-label {
+    margin-bottom: 20px;
+    display: flexbox; /* Use flexbox for alignment */
+    align-items: center; /* Align items vertically in the center */
+}
+
+label {
+    margin-bottom: 5px; /* Space between label and input */
+    font-size: 14px; /* Font size for the label */
+}
+
+.form-group-username {
+    margin-bottom: 50px;
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Align label above input */
+}
+
+input {
+    width: 100%;
+    padding: 12px; /* Increased padding for a better touch */
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Rounded corners */
+    box-sizing: border-box;
+    font-size: 14px; /* Font size for inputs */
+    outline: 1px solid #949494; /* Outline for the container */
+}
+
+input[type="checkbox"] {
+    margin-right: 8px; /* Space between the checkbox and the label */
+    width: auto; /* Ensure the checkbox maintains its original width */
+    height: auto; /* Ensure the checkbox maintains its original height */
+}
+
+input:focus {
+    border-color: #00c4ff; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+}
+
+.btn-submit {
+    background-color: #00c4ff; /* Button background color */
+    color: black;
+    border: none;
+    padding: 12px; /* Increased padding for buttons */
+    border-radius: 8px; /* Rounded button corners */
+    cursor: pointer;
+    font-size: 14px;
+    width: 20%; /* Full width button */
+    margin-left: 80%;
+    margin-top: 40px;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.btn-submit:hover {
+    background-color: #0099cc; /* Darker blue on hover */
+    color: #ffffff
+}
+
+.links {
+    margin-top: 30%;
+    font-size: 14px;
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Space between left and right links */
+}
+
+.links-1 {
+    margin-top: -38%;
+}
+
+.links-2 {
+    margin-top: -30%;
+    margin-right: -5px;
+}
+
+.links a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: space-between; /* Space between footer items */
+    align-items: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+.non-field-errors {
+    color: #dc3545;
+    background-color: #fef1f1;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 3px solid #dc3545;
+    font-size: 14px;
+}

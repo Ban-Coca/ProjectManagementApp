@@ -6,26 +6,28 @@ var modalBtn = document.getElementById("createProjectBtn");
 var closeBtn = document.getElementById("closeModalBtn");
 var projectTitleInput = document.getElementById("projectTitle"); // Assuming this is the ID of the title input field
 var deadlineInput = document.getElementById("projectDeadline"); // Assuming this is the ID of the deadline input field
-
+var cancelBtn = document.getElementById("cancelBtn");
 // Listen for open click
 modalBtn.addEventListener("click", openModal);
 // Listen for close click
 closeBtn.addEventListener("click", closeModal);
 // Listen for outside click
 window.addEventListener("click", outsideClick);
+// Listen for cancel button
+cancelBtn.addEventListener("click",closeModal);
 
 // Function to open modal
 function openModal() {
     modal.style.display = "block";
-    // Change the URL to project_list/create_project without reloading the page
-    history.pushState(null, null, '/projects_list/create_project');
+    // Change the URL to /projects/projects_list/create_project without reloading the page
+    history.pushState(null, null, '/projects/create/');
 }
 
 // Function to close modal
 function closeModal() {
     modal.style.display = "none";
-    // Change the URL back to the project_list page without reloading the page
-    history.pushState(null, null, '/projects_list/');
+    // Change the URL back to the projects list page without reloading the page
+    history.pushState(null, null, '/projects/');
 }
 
 // Function to close modal if outside click

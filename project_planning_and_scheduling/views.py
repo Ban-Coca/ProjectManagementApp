@@ -7,10 +7,6 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
 
-def home(request):
-    projects = Project.objects.all()  # Fetching all projects
-    return render(request, 'home.html', {'projects': projects})
-
 def projects_list(request):
     projects = Project.objects.all()  # Fetching all projects
     return render(request, 'project_page/project_list.html', {'projects': projects})
@@ -37,29 +33,23 @@ def create_project(request):
             return JsonResponse({"error": "Invalid date format."}, status=400)
 
         try:
-            # Set a default user if none exist
-            default_user = User.objects.first()  # Get the first user if exists
-            if default_user is None:
-                default_user = User(username='temp_user', password='temp_password')
-                default_user.save()
-
             new_project = Project(
                 title=title,
                 description=description,
                 start_date=start_date,
                 end_date=deadline,
-                owner=default_user,  # Set the owner to the default user
+                owner=request.user,
                 status='In Progress'
             )
             new_project.save()
-            return redirect('projects_list')  # Redirect to home after successful creation
+            return redirect('project_planning_and_scheduling:projects_list')  # Redirect to home after successful creation
         except ValidationError as e:
             return JsonResponse({"error": str(e)}, status=400)
         except Exception as ex:
             return JsonResponse({"error": "An unexpected error occurred: " + str(ex)}, status=500)
     
     # If it's a GET request (including refresh), redirect to home
-    return redirect('projects_list')
+    return redirect('project_planning_and_scheduling:projects_list')
 
 def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)

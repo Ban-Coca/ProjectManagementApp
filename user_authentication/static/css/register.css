@@ -1,0 +1,143 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    display: flex;
+    justify-content: flex-start; /* Align items to the start (left) */
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.sidebar {
+    background-color: #A49898; /* Color for the left sidebar */
+    width: 40%; /* Width of the sidebar */
+    height: 100vh; /* Full height of the viewport */
+    position: fixed; /* Fixed sidebar */
+    left: 0; /* Align to the left */
+    top: 0; /* Ensure it starts from the top */
+}
+
+.container {
+    background-color: #FEF7FF; /* Light background color */
+    padding: 40px;
+    border-radius: 12px; /* Rounded corners */
+    min-height: 500px;
+    width: 500px; /* Set a fixed width for the container */
+    margin-left: 67%; /* Position it to the right */
+    position: relative; /* For positioning */
+    transform: translateX(-50%); /* Center the container horizontally */
+    outline: 1px solid #d6d6d6; /* Outline for the container */
+}
+
+h3 {
+    font-size: 50px;
+    margin-top: 20px; /* Margin at the top of the heading */
+}
+
+.row {
+    display: flex; /* Use flexbox for alignment */
+    gap: 20px; /* Space between items */
+    margin-bottom: 10px;
+}
+
+.form-group {
+    flex: 1; /* Make each form group take equal width */
+    margin-bottom: 15px;
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Align label above input */
+}
+
+label {
+    margin-bottom: 5px; /* Space between label and input */
+    font-size: 14px; /* Font size for the label */
+}
+
+input {
+    width: 100%;
+    padding: 8px; /* Increased padding for a better touch */
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Rounded corners */
+    box-sizing: border-box;
+    font-size: 14px; /* Font size for inputs */
+    outline: 1px solid #949494; /* Outline for the container */
+}
+
+input:focus {
+    border-color: #00c4ff; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between; /* Align 'Log in' and 'Sign up' side by side */
+    align-items: center;
+    margin-top: 32px; /* Adjust the spacing above the button */
+}
+
+.sign-up-btn {
+    background-color: #00c4ff; /* Button background color */
+    color: black;
+    border: none;
+    width: 20%;
+    padding: 12px; /* Increased padding for buttons */
+    border-radius: 17px; /* Rounded button corners */
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.sign-up-btn:hover {
+    background-color: #0099cc; /* Darker blue on hover */
+    color: white;
+}
+
+.back-link {
+    padding: 0.2rem 0.5rem;
+    text-decoration: none;
+    color: #000;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+.back-link:hover {
+    background-color: #949494;
+    color: white;
+    border-radius: 2px;
+}
+
+.form-actions a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.form-actions p {
+    margin: 0; /* Remove margins to align with button */
+    font-size: 14px;
+}
+
+.messages {
+    margin-bottom: 10px;
+}
+
+.alert {
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
