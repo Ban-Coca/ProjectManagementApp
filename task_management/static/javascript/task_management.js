@@ -170,7 +170,7 @@ function showDetails(taskId) {
         })
         .then(task => {
             renderTaskDetails(task);
-            history.pushState({ taskId: taskId }, '', `/tasks/${taskId}/`);
+            //history.pushState({ taskId: taskId }, '', `/tasks/${taskId}/`);
         })
         .catch(error => {
             console.error('Error fetching task:', error);
@@ -300,7 +300,7 @@ function makeFieldsEditable(taskId) {
         field.addEventListener('keydown', field._keydownHandler);
         
         // Visual feedback
-        field.style.transition = 'all 0.2s';
+        // field.style.transition = 'all 0.2s';
         field.style.padding = '2px 4px';
         field.style.borderRadius = '3px';
 
@@ -312,10 +312,10 @@ function makeFieldsEditable(taskId) {
             field.style.boxShadow = '0 0 0 2px rgba(0,123,255,0.25)';
         });
         
-        field.addEventListener('blur', () => {
-            field.style.backgroundColor = 'transparent';
-            field.style.boxShadow = 'none';
-        });
+        // field.addEventListener('blur', () => {
+        //     field.style.backgroundColor = 'transparent';
+        //     field.style.boxShadow = 'none';
+        // });
         
         // Add save on enter
         field.addEventListener('keydown', (e) => handleContentEditableChange(e, taskId));
@@ -346,7 +346,7 @@ function renderTaskDetails(task) {
     console.log(task.status)
     modal.innerHTML = ` 
 
-    <div class="task-view">
+    <div class="task-view" id="taskView">
         <div class="task-view-nav" id="task-nav">
             <div class="modal-header">
                 <button class="close-button">
@@ -433,11 +433,11 @@ function renderTaskDetails(task) {
 
     const dueDate = modal.querySelector('#dueDate');
     dueDate.value = task.due_date;
-    let content = modal.querySelector('.task-view');
+    let content = modal.querySelector('#taskView');
     modal.style.visibility = 'visible';
 
     content.classList.add('modal-show');
-    content.classList.remove('modal-hide');
+    
 
     makeFieldsEditable(task.task_id);
 
@@ -446,8 +446,8 @@ function renderTaskDetails(task) {
     closeButton.onclick = () => {
         modal.style.visibility = 'hidden';
         history.pushState(null, '', '/');
-        content.classList.remove('modal-show');
-        content.classList.add('modal-hide');
+        content.classList.remove('modal-hide');
+        content.classList.add('modal-show');
     }
     window.onclick = (event) => {
         if (event.target == modal) {

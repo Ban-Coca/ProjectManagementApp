@@ -12,6 +12,9 @@ logger = logging.getLogger(__name__)
 def task_management(request):
     return render(request, 'task_management/task_management.html')
 
+def kanban_board(request):
+    return render(request, 'task_management/kanban_board.html')
+
 @require_http_methods(["GET"])
 def list_tasks(request):
     tasks = Tasks.objects.all()

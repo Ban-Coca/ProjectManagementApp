@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Task Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f1f5f9;
+            line-height: 1.5;
+        }
+
+        .kanban-container {
+            padding: 2rem;
+        }
+
+        .kanban-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .kanban-board {
+            display: flex;
+            gap: 1.5rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        .column {
+            background: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-width: 320px;
+            width: 320px;
+        }
+
+        .column-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .column-count {
+            background: #cbd5e1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: move;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-id {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-description {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-metadata {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .task-priority {
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+
+        .priority-HIGH {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        .priority-MEDIUM {
+            background: #fde68a;
+            color: #854d0e;
+        }
+
+        .priority-LOW {
+            background: #bbf7d0;
+            color: #166534;
+        }
+
+        .dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+
+        .column.drag-over {
+            background: #cbd5e1;
+        }
+
+        .add-task-btn {
+            padding: 0.5rem 1rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .add-task-btn:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="kanban-container">
+        <div class="kanban-header">
+            <h1>Task Management</h1>
+            <button id="addTaskBtn" class="addTaskBtn">Add Task</button>
+        </div>
+        <div id="kanban-board" class="kanban-board">
+            <!-- Columns will be dynamically added here -->
+        </div>
+    </div>
+    {% include "task_management/add_tasks.html" %}
+    <script src="{% static 'javascript/kanban.js' %}"></script>
+</body>
+</html>
