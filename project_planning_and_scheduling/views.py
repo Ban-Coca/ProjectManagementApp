@@ -1,11 +1,9 @@
 from django.shortcuts import render, redirect
 from django.core.exceptions import ValidationError
-from .models import Project, Task, ProjectMember
+from .models import Project
 from django.utils import timezone
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.models import User
-from django.views.decorators.http import require_POST
 
 def projects_list(request):
     projects = Project.objects.all()  # Fetching all projects

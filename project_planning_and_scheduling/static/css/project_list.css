@@ -8,46 +8,50 @@ html, body {
 .under {
     display: flex;
     flex-grow: 1;
-    flex-direction: row; /* Ensure the sidebar and main content are in a row */
+    flex-direction: row;
 }
-
+hr{
+    margin-top: 300px;
+    width: 150px;
+    background-color: black;
+}
 .main-content {
     flex-grow: 1;
     padding: 20px;
     background-color: #f5f5f5;
     margin-top: 60px;
-    height: calc(98vh - 90px); /* Adjust height considering the search box */
+    height: calc(98vh - 90px);
 }
 
-/* Header with search bar and button */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
 }
+
 a {
-    color: inherit; /* Inherit color from parent */
-    text-decoration: none; /* Remove underline */
+    color: inherit;
+    text-decoration: none;
 }
 
-.projects{
+.projects {
     padding: 10px;
     background-color: #D9D9D9;
     border-radius: 20px;
 }
+
 .project-cards {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-height: calc(93vh - 150px); /* Adjust based on your layout */
-    overflow-y: auto; /* Enable vertical scrolling */
-    padding-right: 20px; /* Prevent scrollbar from overlapping content */
-    scrollbar-width: thin; /* For Firefox */
-    scrollbar-color: #A49898 #f0f0f0; /* For Firefox */
+    max-height: calc(93vh - 150px);
+    overflow-y: auto;
+    padding-right: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #A49898 #f0f0f0;
 }
 
-/* Webkit browsers like Chrome, Safari */
 .project-cards::-webkit-scrollbar {
     width: 8px;
 }
@@ -60,103 +64,101 @@ a {
     background-color: #A49898;
     border-radius: 4px;
 }
-.projects p{
+
+.projects p {
     font-size: larger;
     margin-left: 20px;
 }
+
 .project-card {
-    min-height: 100px; /* Minimum height instead of fixed height */
-    width: calc(100% - 40px); /* Full width minus padding */
+    min-height: 100px;
+    width: calc(100% - 40px);
     background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: all 0.3s ease; /* Smooth transition for hover effects */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .project-card:hover {
-    transform: translateY(-5px); /* Slight lift effect */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Increased shadow on hover */
-    background-color: #f0f0f0; /* Slight background color change */
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    background-color: #f0f0f0;
 }
 
 .project-card h3 {
     margin: 0;
-    padding: 0;
-    color: #333; /* Darker color for better contrast */
-    transition: color 0.3s ease; /* Smooth color transition */
+    color: #333;
+    transition: color 0.3s ease;
 }
 
 .project-card p {
     margin: 5px 0 0 0;
-    padding: 0;
-    color: #666; /* Slightly lighter color for the deadline */
-    transition: color 0.3s ease; /* Smooth color transition */
+    color: #666;
+    transition: color 0.3s ease;
 }
 
 .project-card:hover h3 {
-    color: #000; /* Darken title on hover */
+    color: #000;
 }
 
 .project-card:hover p {
-    color: #444; /* Darken deadline text on hover */
+    color: #444;
 }
 
-/* Button styling */
 button {
-    background-color: #A49898; /* Button color */
-    color: #fff; /* Text color */
-    padding: 10px 15px; /* Padding */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor */
-    transition: background-color 0.3s; /* Smooth transition */
+    background-color: #A49898;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #b0a8a8; /* Darker shade on hover */
+    background-color: #b0a8a8;
 }
 
-/* Label styling */
 .more-options label {
-    font-weight: bold; /* Bold labels */
+    font-weight: bold;
 }
 
 .project-card {
-    position: relative; /* Needed for dropdown positioning */
-    padding: 20px; /* Ensure enough padding for the card */
+    position: relative;
+    padding: 20px;
 }
 
 .more-options {
-    position: absolute; /* Position it relative to the project card */
-    top: 40px; /* Adjust as needed */
-    right: 30px; /* Adjust as needed */
+    position: absolute;
+    top: 40px;
+    right: 30px;
 }
 
 .more-options-btn {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.5rem; /* Adjust size as needed */
-    color: #333; /* Change color as needed */
+    font-size: 1.5rem;
+    color: #333;
 }
 
 .options-dropdown {
-    display: none; /* Hidden by default */
-    position: absolute; /* Position it below the button */
-    top: 40px; /* Adjust position as needed */
-    right: 0; /* Align to the right */
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
     background-color: white;
     border: 1px solid #ccc;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 10; /* Ensure it appears above other content */
+    z-index: 10;
 }
 
 .more-options:hover .options-dropdown {
-    display: block; /* Show dropdown on hover */
+    display: block;
 }
 
 .options-dropdown ul {
@@ -170,15 +172,15 @@ button:hover {
 }
 
 .options-dropdown li:hover {
-    background-color: #f0f0f0; /* Light gray background on hover */
-    cursor: pointer; /* Change cursor to pointer */
+    background-color: #f0f0f0;
+    cursor: pointer;
 }
 
 .options-dropdown li a {
     text-decoration: none;
-    color: #333; /* Change color as needed */
+    color: #333;
 }
 
 .options-dropdown li:hover a {
-    color: #b49595; /* Change text color on hover */
+    color: #b49595;
 }

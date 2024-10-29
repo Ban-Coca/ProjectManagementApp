@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'task_management',
     'project_planning_and_scheduling',
-    'home'
+    'home',
+    'dashboard',
 ]
 
 MIDDLEWARE = [

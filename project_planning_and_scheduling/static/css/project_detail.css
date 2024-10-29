@@ -55,6 +55,7 @@ html, body {
 /* Project description */
 .project-description {
     padding: 5px;
+    margin-top: 10px;
     margin-left: 15px;
     margin-bottom: 20px;
 }
@@ -80,15 +81,7 @@ html, body {
     margin-left: 20px;
 }
 
-.sidebar-icon {
-    width: 20px;  /* Adjust width as needed */
-    height: 20px; /* Adjust height as needed */
-    margin-right: 8px; /* Space between the icon and text */
-    vertical-align: middle; /* Align icon vertically with text */
-    display: inline-block; /* Ensure it behaves like inline elements */
-}
-
-button {
+.main-content button {
     background-color: #A49898; /* Button color */
     color: #fff; /* Text color */
     padding: 10px 15px; /* Padding */
@@ -98,7 +91,7 @@ button {
     transition: background-color 0.3s; /* Smooth transition */
 }
 
-button:hover {
+.main-content button:hover {
     background-color: #b0a8a8; /* Darker shade on hover */
 }
 
@@ -109,6 +102,9 @@ button:hover {
 
 .tab_content {
     display: none;
+    height: 69vh;
+    border-radius: 5px;
+    overflow: auto;
 }
 .tab_content.active {
     display: block;

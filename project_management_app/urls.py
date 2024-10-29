@@ -25,4 +25,5 @@ urlpatterns = [
     path('projects/', include('project_planning_and_scheduling.urls')),
     path('home/',include('home.urls')),
     path('tasks/', include('task_management.urls')),
+    path('dashboard/',include('dashboard.urls')),
 ]

@@ -19,20 +19,48 @@
                 </a>
             </li>
             <!-- Check if "Dashboards" is meant to be different from "Home" -->
-            <li class="nav-container {% if request.resolver_match.url_name == 'dashboards' %}active{% endif %}">
-                <a href="{% url 'home:home' %}" class="nav-link" aria-label="Dashboards">
+            <li class="nav-container {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <a href="{% url 'dashboard:dashboard' %}" class="nav-link" aria-label="Dashboards">
                     <div class="nav-item">
                         <img src="{% static 'images/home.png' %}" alt="Dashboards Icon" class="sidebar-icon">
-                        <p>Dashboards</p>
+                        <p>Dashboard</p>
                     </div>
                 </a>
             </li>
-        </ul>                
+        </ul>    
+        <div>
+            <hr class="underline_sidebar">
+            <ul>
+                <li class="nav-container">
+                    <a href="{% url 'auth:login' %}" class="nav-link" aria-label="Logout">
+                        <div class="nav-item">
+                            <img src="{% static 'images/logout.png' %}" alt="Dashboards Icon" class="sidebar-icon">
+                            <p>Logout</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-container">
+                    <a href="{% url 'home:home' %}" class="nav-link" aria-label="Logout">
+                        <div class="nav-item">
+                            <img src="{% static 'images/help.png' %}" alt="Dashboards Icon" class="sidebar-icon">
+                            <p>Help</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>            
     </nav>
 </div>
 
 
 <style>
+    .underline_sidebar{
+        margin-top: 300px;
+        width: 150px;
+        border: none;
+        height: 2px;
+        background-color: #000;
+    }
     .sidebar nav{
         margin-top: 20px;
     }

@@ -86,7 +86,3 @@ def forgot_password(request):
         except User.DoesNotExist:
             messages.error(request, 'No user is associated with this email address.')
     return render(request, 'password_reset.html')  # Render the password reset template
-
-def home(request):
-    projects = Project.objects.all()  # Fetching all projects
-    return render(request, 'project_planning_and_scheduling/home.html', {'projects': projects})
