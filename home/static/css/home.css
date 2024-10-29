@@ -47,7 +47,12 @@ html, body {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    max-width: 182vh;
+    max-width: 185vh;
+}
+
+.project-cards a {
+    color: inherit; /* Inherit color from parent element */
+    text-decoration: none; /* Remove underline */
 }
 
 .project-card {
@@ -62,6 +67,12 @@ html, body {
     overflow: hidden; /* Hide overflow content */
     text-overflow: ellipsis; /* Truncate overflowing text */
     white-space: nowrap; /* Prevent text from wrapping to a new line */
+    transition: background-color 0.3s; /* Smooth transition for the hover effect */
+}
+
+.project-card:hover {
+    background-color: #f0f0f0; /* Change to a lighter shade or any color you prefer on hover */
+    border-radius: 5px; /* Keep the corners rounded on hover */
 }
 
 .project-card p {

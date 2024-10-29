@@ -25,19 +25,19 @@
                         {% for project in projects %}
                             <div class="project-card">
                                 <a href="{% url 'project_planning_and_scheduling:project_detail' project.id %}">
-                                    <div data-project-id="{{ project.id }}">  <!-- Add data-project-id -->
+                                    <div data-project-id="{{ project.id }}">
                                         <h3>{{ project.title }}</h3>
                                         <p>Deadline: {{ project.end_date }}</p>
                                     </div>
                                 </a>
                                 <div class="more-options">
                                     <button class="more-options-btn" aria-label="More options">
-                                        &#8230; <!-- This is a Unicode character for ellipsis -->
+                                        &#8230;
                                     </button>
                                     <div class="options-dropdown">
                                         <ul>
                                             <li>
-                                                <a class="delete-project" href="#">Delete</a>  <!-- Optionally, you can add href="#" to make it a clickable link -->
+                                                <a class="delete-project" href="#">Delete</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -45,15 +45,18 @@
                             </div>
                         {% endfor %}
                     {% else %}
-                        <p>No Assigned Project</p> <!-- Message when no projects are available -->
+                        <p>No Assigned Project</p>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Include the Modal -->
+    <!-- Include the Create Project Modal -->
     {% include 'project_page/createprojectmodal.html' %}
+
+    <!-- Include the Delete Confirmation Modal -->
+    {% include 'project_page/deleteprojectmodal.html' %} <!-- Include this file -->
 </body>
 </html>
 {% endblock %}

@@ -2,6 +2,60 @@ document.addEventListener("DOMContentLoaded", function() {
     // Initialize dropdowns for more options buttons
     initializeMoreOptions();
 
+    const deleteProjectModal = document.getElementById('deleteProjectModal');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    let selectedProjectId = null; // Store the project ID to delete
+
+    // Handle delete project action via more-options dropdown
+    document.querySelectorAll('.delete-project').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default anchor behavior
+
+            const projectCard = this.closest('.project-card'); // Find the closest project card
+            selectedProjectId = projectCard.querySelector('[data-project-id]').getAttribute('data-project-id'); // Extract project ID
+
+            if (!selectedProjectId) {
+                console.error('Project ID not found!');
+                return; // Exit if project ID is not found
+            }
+
+            // Open the delete modal
+            openDeleteModal();
+        });
+    });
+
+    // Confirm delete button in modal
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (!selectedProjectId) return; // No project selected
+
+        // Send a DELETE request to the server
+        fetch(`/projects/delete/${selectedProjectId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'), // Ensure you have CSRF protection
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Project deleted successfully.');
+                location.reload(); // Refresh the page or remove the card from the DOM dynamically
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the delete operation:', error);
+        })
+        .finally(() => {
+            closeDeleteModal();
+        });
+    });
+
+    // Cancel delete button in modal
+    cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+
     // Close the dropdown if clicking outside of it
     document.addEventListener('click', function() {
         const dropdowns = document.querySelectorAll('.options-dropdown');
@@ -10,44 +64,16 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Handle delete project action
-    document.querySelectorAll('.delete-project').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default anchor behavior
+    // Function to open delete modal
+    function openDeleteModal() {
+        deleteProjectModal.style.display = 'block';
+    }
 
-            const projectCard = this.closest('.project-card'); // Find the closest project card
-            const projectId = projectCard.querySelector('[data-project-id]').getAttribute('data-project-id'); // Extract project ID
-
-            if (!projectId) {
-                console.error('Project ID not found!');
-                return; // Exit if project ID is not found
-            }
-
-            // Confirm deletion
-            const confirmDelete = confirm('Are you sure you want to delete this project?');
-            if (!confirmDelete) return; // Exit if user cancels
-
-            // Send a DELETE request to the server
-            fetch(`/projects/delete/${projectId}/`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'), // Ensure you have CSRF protection
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Project deleted successfully.');
-                    location.reload(); // Refresh the page
-                } else {
-                    throw new Error('Network response was not ok.');
-                }
-            })
-            .catch(error => {
-                console.error('There was a problem with the delete operation:', error);
-            });
-        });
-    });
+    // Function to close delete modal
+    function closeDeleteModal() {
+        deleteProjectModal.style.display = 'none';
+        selectedProjectId = null; // Reset selected project ID
+    }
 
     // Function to initialize the dropdown options
     function initializeMoreOptions() {
@@ -55,10 +81,10 @@ document.addEventListener("DOMContentLoaded", function() {
         moreOptionsBtns.forEach(button => {
             button.addEventListener('click', function(event) {
                 const dropdown = this.nextElementSibling; // Get the dropdown related to the clicked button
-                
+
                 // Toggle the visibility of the dropdown
                 dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-                
+
                 event.stopPropagation(); // Prevent the click event from bubbling up
             });
         });

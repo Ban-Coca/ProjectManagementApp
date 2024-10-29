@@ -9,7 +9,6 @@ html, body {
     display: flex;
     flex-grow: 1;
     flex-direction: row; /* Ensure the sidebar and main content are in a row */
-    height: 60vh;
 }
 
 .main-content {

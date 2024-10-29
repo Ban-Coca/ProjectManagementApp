@@ -9,7 +9,6 @@ html, body {
     display: flex;
     flex-grow: 1;
     flex-direction: row; /* Ensure the sidebar and main content are in a row */
-    height: 60vh;
 }
 
 .main-content {
@@ -106,14 +105,6 @@ a {
     color: #444; /* Darken deadline text on hover */
 }
 
-.sidebar-icon {
-    width: 20px;  /* Adjust width as needed */
-    height: 20px; /* Adjust height as needed */
-    margin-right: 8px; /* Space between the icon and text */
-    vertical-align: middle; /* Align icon vertically with text */
-    display: inline-block; /* Ensure it behaves like inline elements */
-}
-
 /* Button styling */
 button {
     background-color: #A49898; /* Button color */
@@ -130,12 +121,8 @@ button:hover {
 }
 
 /* Label styling */
-label {
+.more-options label {
     font-weight: bold; /* Bold labels */
-}
-
-h2 {
-    margin-top: 0; /* Remove top margin */
 }
 
 .project-card {

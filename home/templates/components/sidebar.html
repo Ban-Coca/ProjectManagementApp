@@ -1,20 +1,36 @@
 <div class="sidebar">
     {% load static %}
-    <nav>
+    <nav role="navigation">
         <ul>
             <li class="nav-container {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-                <a href="{% url 'home:home' %}" class="nav-link">
-                    <img src="{% static 'images/home.png' %}" alt="Home" class="sidebar-icon"> Home
+                <a href="{% url 'home:home' %}" class="nav-link" aria-label="Home">
+                    <div class="nav-item">
+                        <img src="{% static 'images/home.png' %}" alt="Home Icon" class="sidebar-icon">
+                        <p>Home</p>
+                    </div>
                 </a>
             </li>
             <li class="nav-container {% if request.resolver_match.url_name == 'projects_list' or request.resolver_match.url_name == 'project_detail' %}active{% endif %}">
-                <a href="{% url 'project_planning_and_scheduling:projects_list' %}" class="nav-link">
-                    <img src="{% static 'images/project.png' %}" alt="Projects" class="sidebar-icon"> Projects
+                <a href="{% url 'project_planning_and_scheduling:projects_list' %}" class="nav-link" aria-label="Projects">
+                    <div class="nav-item">
+                        <img src="{% static 'images/project.png' %}" alt="Projects Icon" class="sidebar-icon">
+                        <p>Projects</p>
+                    </div>
+                </a>
+            </li>
+            <!-- Check if "Dashboards" is meant to be different from "Home" -->
+            <li class="nav-container {% if request.resolver_match.url_name == 'dashboards' %}active{% endif %}">
+                <a href="{% url 'home:home' %}" class="nav-link" aria-label="Dashboards">
+                    <div class="nav-item">
+                        <img src="{% static 'images/home.png' %}" alt="Dashboards Icon" class="sidebar-icon">
+                        <p>Dashboards</p>
+                    </div>
                 </a>
             </li>
         </ul>                
     </nav>
 </div>
+
 
 <style>
     .sidebar nav{
@@ -36,29 +52,55 @@
 
     .nav-container {
         display: flex; /* Use flexbox */
-        /*justify-content: flex-start; /* Align items to the left */
         align-items: center; /* Center vertically */
-        width: 140px;
-        height: auto; /* Set height to auto */
-        margin-bottom: 20px; /* Add space below the home link */
+        padding: 5px;
+        width: 207px;
+        margin-left: 5px;
+        height: 50px; /* Set height to auto */
+        margin-bottom: 5px; /* Add space below the home link */
+        border-radius: 10px;
     }
 
+    .nav-item{
+        display: flex;
+    }
+    .sidebar p{
+        margin-left: 40px;
+    }
     .nav-link {
+        width: 100%;
         text-decoration: none; /* Removes the underline from links */
         color: black; /* Ensures link color inherits from parent */
         font-size: 18px; /* Adjust the font size */
-        padding: 10px; /* Add some padding */
-        
+        padding: 5px; /* Add some padding */
+    }
+    .sidebar-icon {
+        margin-top: 18px;
+        width: 20px;  /* Adjust width as needed */
+        height: 20px; /* Adjust height as needed */
+        margin-right: 8px; /* Space between the icon and text */
+        vertical-align: middle; /* Align icon vertically with text */
+        display: inline-block; /* Ensure it behaves like inline elements */
     }
 
+    /* Active state for nav containers */
     .nav-container.active {
-        border-radius: 10px;
-        background-color: #c8c8c8; /* Color for the active state */
+        background-color: #796262; /* Color for the active state */
     }
 
-    .nav-container:hover {
-        border-radius: 10px; /* Optional: Add rounded corners */
+    /* Hover effect only for non-active nav containers */
+    .nav-container:not(.active):hover {
+        background-color: rgba(228, 228, 228, 0.5); /* Light gray with 50% transparency */
         transition: background-color 0.3s; /* Smooth transition for hover effect */
-        background-color: #d0d0d0; /* Change background color on hover */
+    }
+
+    /* Prevent hover effect on active items */
+    .nav-container.active:hover {
+        background-color: #796262; /* Keeps the active color unchanged on hover */
+    }
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
     }
 </style>

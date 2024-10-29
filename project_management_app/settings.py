@@ -58,7 +58,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / 'project_planning_and_scheduling/templates',
-            BASE_DIR / 'home',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -122,7 +121,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
+STATICFILES_DIRS = [ 
     BASE_DIR / "project_planning_and_scheduling" / "static",
     BASE_DIR / "user_authentication" / "static",
 ]
