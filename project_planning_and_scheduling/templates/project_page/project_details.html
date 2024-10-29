@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }} - Project Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
+</head>
+<body>
+{% block content %}
+    {% include 'components/searchbar.html' %}
+    <div class="under">
+        {% include 'components/sidebar.html' %}
+        <div class="main-content">
+            <h1>{{ project.title }}</h1>
+            <div class="project-nav">
+                <div class="nav-button">
+                    <button class="tab-link active" data-tab="overview">Overview</button>
+                    <button class="tab-link" data-tab="task_table">Tasks</button>
+                    <button class="tab-link" data-tab="members">Board</button>
+                </div>
+                
+            </div>
+            <div id="overview" class="tab_content active">
+                <div class="project-description">
+                    <h2>Project Description</h2>
+                    <p>{{ project.description }}</p>
+                </div>
+                <div class="project-details">
+                    <div>
+                        <h3>Deadline</h3>
+                        <p>{{ project.end_date }}</p>
+                    </div>
+                    <div>
+                        <h3>Members</h3>
+                        <p>{{ project.owner.username }}</p>
+                        <div class="members">
+                            {% for member in members %}
+                                <span class="member">{{ member.user.username }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="tasks">
+                    <h3>Tasks</h3>
+                    <ul>
+                        {% for task in project.task_set.all %}
+                            <li>{{ task.title }} - {{ task.status }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div id="task_table" class="tab_content">
+                {% include 'task_management/task_management.html' %}
+            </div>
+
+            {% comment %} <div id="board" class="tab_content">
+                {% include 'task_management/kanban_board.html' %}
+            </div>  {% endcomment %}
+        </div>
+    </div>
+    {% comment %} <script src="{% static 'javascript/project_detail.js' %}"></script> {% endcomment %}
+
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab_content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+{% endblock %}
+</body>
+</html>

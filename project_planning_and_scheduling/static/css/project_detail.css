@@ -1,0 +1,116 @@
+/* Ensure body and html take full height */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.under {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row; /* Ensure the sidebar and main content are in a row */
+    height: 60vh;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f5f5f5;
+    margin-top: 60px;
+    height: calc(98vh - 90px); /* Adjust height considering the search box */
+}
+#overview, #task_table {
+    background-color: #e0e0e0;
+    height: 69vh;
+    border-radius: 5px;
+}
+
+.overview-button,
+.list-button,
+.board-button {
+    text-decoration: none; 
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    color: black;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.overview-button:hover,
+.list-button:hover,
+.board-button:hover {
+    background-color: #d0d0d0; /* Change color on hover */
+}
+
+.project-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-button {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+/* Project description */
+.project-description {
+    padding: 5px;
+    margin-left: 15px;
+    margin-bottom: 20px;
+}
+
+.project-details {
+    display: flex;
+    gap: 180px;
+    margin-left: 20px;
+}
+
+.members {
+    display: flex;
+    gap: 10px;
+}
+
+.member {
+    background-color: #d0d0d0;
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+
+.tasks {
+    margin-left: 20px;
+}
+
+.sidebar-icon {
+    width: 20px;  /* Adjust width as needed */
+    height: 20px; /* Adjust height as needed */
+    margin-right: 8px; /* Space between the icon and text */
+    vertical-align: middle; /* Align icon vertically with text */
+    display: inline-block; /* Ensure it behaves like inline elements */
+}
+
+button {
+    background-color: #A49898; /* Button color */
+    color: #fff; /* Text color */
+    padding: 10px 15px; /* Padding */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #b0a8a8; /* Darker shade on hover */
+}
+
+.tab-link.active {
+    background-color: #282b2e;
+    color: white;
+}
+
+.tab_content {
+    display: none;
+}
+.tab_content.active {
+    display: block;
+}

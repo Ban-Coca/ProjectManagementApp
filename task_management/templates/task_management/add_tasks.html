@@ -15,7 +15,16 @@
             
             <div id="members" class="members">
                 <h3>Members</h3>
-                <input type="text" id="taskAssignee" placeholder="Members" required>
+                <div class="user-search-container">
+                    <input type="text" 
+                           id="taskAssignee" 
+                           list="users-list" 
+                           placeholder="Search members..." 
+                           required>
+                    <datalist id="users-list">
+                        <!-- Will be populated by JavaScript -->
+                    </datalist>
+                </div>
             </div>
 
             <div id="deadlines" class="deadlines">

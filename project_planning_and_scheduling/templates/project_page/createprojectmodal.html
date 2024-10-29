@@ -1,0 +1,100 @@
+<!-- Modal for Creating New Project -->
+<div id="projectModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h2>Create New Project</h2>
+        <div class="form-scroll-container"> <!-- Container for horizontal scrolling -->
+            <form id="createProjectForm" action="{% url 'project_planning_and_scheduling:create_project' %}" method="POST">
+                {% csrf_token %}
+                <label for="projectTitle">Project Title:</label>
+                <input type="text" id="projectTitle" name="projectTitle" required><br><br>
+
+                <label for="projectDescription">Description:</label><br>
+                <textarea id="projectDescription" name="projectDescription" class="description" required></textarea><br><br>
+
+                <label for="projectDeadline">Deadline:</label>
+                <input type="date" id="projectDeadline" name="projectDeadline" required><br><br>
+            </form>
+        </div> <!-- End of scroll container -->
+
+        <div class="button-container"> <!-- Moved button container outside the scrollable area -->
+            <button type="button" id="cancelBtn">Cancel</button> 
+            <button type="submit" form="createProjectForm">Create Project</button> <!-- Added form attribute to submit the correct form -->
+        </div>
+    </div>
+</div>
+
+<style>
+    .modal {
+        display: flex; /* Enable flexbox */
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        position: fixed; /* Fixed position */
+        top: 0; /* Align to the top */
+        left: 0; /* Align to the left */
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        z-index: 1000; /* Make sure it appears above other content */
+    }
+
+    .modal-content {
+        background-color: #fff; /* White background for modal content */
+        padding: 20px; /* Padding inside the modal */
+        border-radius: 5px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for the modal */
+        max-width: 500px; /* Set a maximum width for the modal */
+        width: 90%; /* Full width within max width */
+        margin: auto; /* Center within the modal */
+        margin-top: 90px; /* Adjust this value to add space from the top */
+        overflow: hidden; /* Hide overflow of modal content */
+    }
+
+    /* Container for horizontal scrolling */
+    .form-scroll-container {
+        max-height: 450px; /* Limit height for scrolling */
+        overflow-y: auto; /* Enable vertical scrolling */
+        padding-right: 30px; /* Prevent scrollbar from overlapping content */
+    }
+
+    /* Button of modal style */
+    .button-container {
+        display: flex; /* Enable flexbox */
+        gap: 10px;
+        justify-content: right; /* Center horizontally */
+        margin-top: 20px; /* Optional: Add space above the button */
+    }
+
+    /* Close button */
+    .close {
+        color: #A49898;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000; /* Darken on hover */
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Input and textarea styles */
+    input[type="text"],
+    input[type="date"],
+    textarea,
+    select {
+        width: 480px; /* Full width */
+        padding: 10px; /* Padding inside input */
+        margin-top: 5px; /* Spacing above inputs */
+        margin-bottom: 15px; /* Spacing below inputs */
+        border: 1px solid #ccc; /* Light gray border */
+        border-radius: 5px; /* Rounded corners */
+        box-sizing: border-box; /* Include padding in width */
+    }
+
+    textarea {
+        max-width: 480px;
+    }
+</style>

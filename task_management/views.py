@@ -7,6 +7,9 @@ import json
 import logging
 from .models import Tasks
 from .forms import TaskForm
+from user_authentication.models import User
+from django.db.models import Q
+
 logger = logging.getLogger(__name__)
 # Create your views here.
 def task_management(request):
@@ -135,3 +138,14 @@ def delete_task(request, task_id):
     task = get_object_or_404(Tasks, task_id=task_id)
     task.delete()
     return JsonResponse({'success': True})
+
+
+# def search_users(request):
+#     query = request.GET.get('q', '')
+#     users = User.objects.filter(
+#         Q(username__icontains=query) |
+#         Q(email__icontains=query)
+#     ).values('id', 'username', 'email')[:10]
+    
+#     return JsonResponse(list(users), safe=False)
+    

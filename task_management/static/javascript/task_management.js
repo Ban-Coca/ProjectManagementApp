@@ -1,4 +1,5 @@
 let tasks = [];
+let users = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     // Consolidate duplicate DOMContentLoaded listeners
@@ -14,10 +15,52 @@ function initializeTaskManagement() {
     
     // Form setup
     setupTaskForm();
+
+    // search users to assign task
+    // searchUsers();
 }
 
+// function searchUsers() {
+//     const taskAssignee = document.getElementById('task-assignee');
+//     if (!taskAssignee) return;
+//     taskAssignee.addEventListener('focus', () => {
+//         if (users.length === 0){
+//             fetchUsers();
+//         } ;
+//     })
+// }
+
+// function fetchUsers(search = '') {
+//     const url = search ? `/tasks/search_assignee/?search=${search}` : '/tasks/search_assignee/';
+
+//     fetch(url)
+//     .then(response => {
+//         if (!response.ok) throw new Error('Failed to fetch users');
+//         return response.json();
+//     })
+//     .then(data => {
+//         console.log('Fetched users:', data);
+//         users = data.users || [];
+//         renderUsers(users);
+//     })
+//     .catch(error => {
+//         console.error('Error fetching users:', error);
+//         showToast('Failed to load users', 'error');
+//     });
+
+// }
+
+// function renderUsers(users) {
+//     const datalist = document.getElementById('users-list');
+//     if (!datalist) return;
+
+//     datalist.innerHTML = users.map(user => 
+//         `<option value="${user.username}">${user.username}</option>`
+//     ).join('');
+// }
+
 function fetchTasks() {
-    fetch('/tasks/')
+    fetch('/tasks/task_list/')
         .then(response => {
             if (!response.ok) throw new Error('Failed to fetch tasks');
             return response.json();

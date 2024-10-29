@@ -19,7 +19,7 @@ class KanbanBoard {
 
     async loadTasks() {
         try {
-            const response = await fetch('/tasks');
+            const response = await fetch('/tasks/task_list/');
             const data = await response.json();
             console.log(data);
             // Reset columns
@@ -140,14 +140,14 @@ class KanbanBoard {
                 }
     
                 if (data.success) {
-                    Toast.show('Task added successfully', 'success');
+                    // Toast.show('Task added successfully', 'success');
                     addTaskForm.reset();
                     modal.style.display = 'none';
                     this.loadTasks(); // Refresh tasks instead of page reload
                 }
             } catch (error) {
                 console.error('Error:', error);
-                Toast.show(error.message, 'error');
+                // Toast.show(error.message, 'error');
             }
         };
     }
@@ -232,29 +232,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const board = new KanbanBoard();
 });
 
-const Toast = {
-    show(message, type = 'success') {
-        const existingToast = document.getElementById('toastNotification');
-        if (existingToast) existingToast.remove();
+// const Toast = {
+//     show(message, type = 'success') {
+//         const existingToast = document.getElementById('toastNotification');
+//         if (existingToast) existingToast.remove();
         
-        const toast = document.createElement('div');
-        toast.id = 'toastNotification';
-        toast.className = `toast-notification ${type}`;
-        toast.textContent = message;
+//         const toast = document.createElement('div');
+//         toast.id = 'toastNotification';
+//         toast.className = `toast-notification ${type}`;
+//         toast.textContent = message;
         
-        document.body.appendChild(toast);
+//         document.body.appendChild(toast);
         
-        setTimeout(() => {
-            toast.classList.add('fade-out');
-            setTimeout(() => {
-                toast.remove();
-                if (type === 'success') {
-                    fetchTasks(); // Refresh data instead of page reload
-                }
-            }, 300);
-        }, 2000);
-    }
-};
+//         setTimeout(() => {
+//             toast.classList.add('fade-out');
+//             setTimeout(() => {
+//                 toast.remove();
+//                 if (type === 'success') {
+//                     fetchTasks(); // Refresh data instead of page reload
+//                 }
+//             }, 300);
+//         }, 2000);
+//     }
+// };
 
 function getFormData() {
     return {
