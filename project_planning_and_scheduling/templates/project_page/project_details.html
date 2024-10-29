@@ -16,15 +16,13 @@
             <h1>{{ project.title }}</h1>
             <div class="project-nav">
                 <div class="nav-button">
-                    <a href="#" class="overview-button">Overview</a>
-                    <a href="#" class="list-button">Task List</a>
-                    <a href="#" class="board-button">Board</a>
+                    <button class="tab-link active" data-tab="overview">Overview</button>
+                    <button class="tab-link" data-tab="task_table">Tasks</button>
+                    <button class="tab-link" data-tab="members">Board</button>
                 </div>
-                <div class="task-button">
-                    <button id="createTaskBtn">+ Create Task</button>
-                </div>
+                
             </div>
-            <div class="overview">
+            <div id="overview" class="tab_content active">
                 <div class="project-description">
                     <h2>Project Description</h2>
                     <p>{{ project.description }}</p>
@@ -53,8 +51,38 @@
                     </ul>
                 </div>
             </div>
+
+            <div id="task_table" class="tab_content">
+                {% include 'task_management/task_management.html' %}
+            </div>
+
+            {% comment %} <div id="board" class="tab_content">
+                {% include 'task_management/kanban_board.html' %}
+            </div>  {% endcomment %}
         </div>
     </div>
+    {% comment %} <script src="{% static 'javascript/project_detail.js' %}"></script> {% endcomment %}
+
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab_content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
 {% endblock %}
 </body>
 </html>

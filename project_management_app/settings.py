@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'task_management',
     'project_planning_and_scheduling',
     'home'
 ]
@@ -124,6 +125,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [ 
     BASE_DIR / "project_planning_and_scheduling" / "static",
     BASE_DIR / "user_authentication" / "static",
+    BASE_DIR / "task_management" / "static",
 ]
 
 # Default primary key field type

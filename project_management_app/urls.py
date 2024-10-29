@@ -23,5 +23,6 @@ urlpatterns = [
     path('user_auth/', include('user_authentication.urls')),
     path('', RedirectView.as_view(url='/user_auth/login/', permanent=False)),
     path('projects/', include('project_planning_and_scheduling.urls')),
-    path('home/',include('home.urls'))
+    path('home/',include('home.urls')),
+    path('tasks/', include('task_management.urls')),
 ]

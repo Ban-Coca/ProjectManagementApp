@@ -18,7 +18,7 @@ html, body {
     margin-top: 60px;
     height: calc(98vh - 90px); /* Adjust height considering the search box */
 }
-.overview {
+#overview, #task_table {
     background-color: #e0e0e0;
     height: 69vh;
     border-radius: 5px;
@@ -100,4 +100,16 @@ button {
 
 button:hover {
     background-color: #b0a8a8; /* Darker shade on hover */
+}
+
+.tab-link.active {
+    background-color: #282b2e;
+    color: white;
+}
+
+.tab_content {
+    display: none;
+}
+.tab_content.active {
+    display: block;
 }
