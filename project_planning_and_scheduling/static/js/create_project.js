@@ -7,14 +7,13 @@ var closeBtn = document.getElementById("closeModalBtn");
 var projectTitleInput = document.getElementById("projectTitle"); // Assuming this is the ID of the title input field
 var deadlineInput = document.getElementById("projectDeadline"); // Assuming this is the ID of the deadline input field
 var cancelBtn = document.getElementById("cancelBtn");
+
 // Listen for open click
 modalBtn.addEventListener("click", openModal);
 // Listen for close click
 closeBtn.addEventListener("click", closeModal);
-// Listen for outside click
-window.addEventListener("click", outsideClick);
 // Listen for cancel button
-cancelBtn.addEventListener("click",closeModal);
+cancelBtn.addEventListener("click", closeModal);
 
 // Function to open modal
 function openModal() {
@@ -28,13 +27,6 @@ function closeModal() {
     modal.style.display = "none";
     // Change the URL back to the projects list page without reloading the page
     history.pushState(null, null, '/projects/');
-}
-
-// Function to close modal if outside click
-function outsideClick(e) {
-    if (e.target == modal) {
-        closeModal();
-    }
 }
 
 // Validate project title (no special characters allowed)
@@ -108,7 +100,6 @@ document.getElementById("createProjectForm").addEventListener("submit", function
         submitButton.disabled = false; // Re-enable the button
     });
 });
-
 
 // Function to get CSRF token from cookies
 function getCookie(name) {

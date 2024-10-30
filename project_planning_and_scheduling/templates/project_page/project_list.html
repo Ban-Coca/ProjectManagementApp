@@ -10,50 +10,49 @@
     <script src="{% static 'js/project_options.js' %}" defer></script> 
 </head>
 <body>
-{% block content %}
     {% include 'components/searchbar.html' %}
     <div class="under">
         {% include 'components/sidebar.html' %}
-        <div class="main-content">
-            <div class="header">
-                <h1>Project List</h1>
-                <button class="create-project" id="createProjectBtn">Create project +</button>
-            </div>
-            <div class="projects">
-                <div class="project-cards">
-                    {% if projects %}
-                        {% for project in projects %}
-                            <div class="project-card">
-                                <a href="{% url 'project_planning_and_scheduling:project_detail' project.id %}">
-                                    <div data-project-id="{{ project.id }}">  <!-- Add data-project-id -->
-                                        <h3>{{ project.title }}</h3>
-                                        <p>Deadline: {{ project.end_date }}</p>
-                                    </div>
-                                </a>
-                                <div class="more-options">
-                                    <button class="more-options-btn" aria-label="More options">
-                                        &#8230; <!-- This is a Unicode character for ellipsis -->
-                                    </button>
-                                    <div class="options-dropdown">
-                                        <ul>
-                                            <li>
-                                                <a class="delete-project" href="#">Delete</a>  <!-- Optionally, you can add href="#" to make it a clickable link -->
-                                            </li>
-                                        </ul>
+        {% block content %}
+            <div class="main-content">
+                <div class="header">
+                    <h1>Project List</h1>
+                    <button class="create-project" id="createProjectBtn">Create project +</button>
+                </div>
+                <div class="projects">
+                    <div class="project-cards">
+                        {% if projects %}
+                            {% for project in projects %}
+                                <div class="project-card">
+                                    <a href="{% url 'project_planning_and_scheduling:project_detail' project.id %}">
+                                        <div data-project-id="{{ project.id }}">
+                                            <h3>{{ project.title }}</h3>
+                                            <p>Deadline: {{ project.end_date }}</p>
+                                        </div>
+                                    </a>
+                                    <div class="more-options">
+                                        <button class="more-options-btn" aria-label="More options">&#8230;</button>
+                                        <div class="options-dropdown">
+                                            <ul>
+                                                <li><a class="delete-project" href="#">Delete</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>No Assigned Project</p> <!-- Message when no projects are available -->
-                    {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p>No Assigned Project</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
 
-    <!-- Include the Modal -->
-    {% include 'project_page/createprojectmodal.html' %}
+        <!-- Include the Create Project Modal -->
+        {% include 'project_page/createprojectmodal.html' %}
+
+        <!-- Include the Delete Confirmation Modal -->
+        {% include 'project_page/deleteprojectmodal.html' %}
+    </div>
 </body>
 </html>
-{% endblock %}
