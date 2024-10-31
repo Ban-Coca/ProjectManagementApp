@@ -1,7 +1,7 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
@@ -148,11 +148,12 @@
     </style>
 </head>
 <body>
+    
     <div class="kanban-container">
         <div class="kanban-header">
             <button id="addTaskBtn" class="addTaskBtn">Add Task</button>
         </div>
-        <div id="kanban-board" class="kanban-board">
+        <div id="kanban-board" class="kanban-board" >
             <!-- Columns will be dynamically added here -->
         </div>
     </div>

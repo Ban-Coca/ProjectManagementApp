@@ -3,17 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Dashboard</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="{% static 'js/dashboard.js' %}" defer></script>
 </head>
 <body>
     {% include 'components/searchbar.html' %}
     <div class="under">
         {% include 'components/sidebar.html' %}
         <div class="main-content">
-            <h1>Dashboard</h1>
+            <div class="header">
+                <h1>Dashboard</h1>
+                <div class="dropdown">
+                    <button class="proj_select" id="projectDropdown">
+                        {% if selected_project %}
+                            {{ selected_project.title }}
+                        {% else %}
+                            All Projects
+                        {% endif %}
+                        &#9662;
+                    </button>
+                    <div class="dropdown-content" id="projectList">
+                        <a href="{% url 'dashboard:dashboard_view' %}" class="dropdown-item {% if not selected_project %}active{% endif %}">
+                            All Projects
+                        </a>
+                        {% for project in projects %}
+                            <a href="{% url 'dashboard:project_dashboard_view' project.id %}" 
+                                class="dropdown-item {% if selected_project and selected_project.id == project.id %}active{% endif %}">
+                                {{ project.title }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-welcome">
+                <h2>Welcome to Dashboard</h2>
+                <p>Monitor your project's progress, track tasks, and view important statistics here. Click on [Select Project] at the top right to view tasks and visualize statistics in your Workspace.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card" draggable="true">
+                    <h3>
+                        Unassigned
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" />
+                        </div>
+                    </h3>
+                    <div class="stat-number">{{ in_progress_tasks }}</div>
+                    <div class="stat-label">Unassigned Tasks</div>
+                </div>
+
+                <div class="stat-card" draggable="true">
+                    <h3>
+                        In Progress
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" />
+                        </div>
+                    </h3>
+                    <div class="stat-number">{{ completed_tasks }}</div>
+                    <div class="stat-label">tasks in progress</div>
+                </div>
+
+                <div class="stat-card" draggable="true">
+                    <h3>
+                        Completed
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" />
+                        </div>
+                    </h3>
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">tasks completed</div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card" draggable="true">
+                    <h3>
+                        Total Tasks by Assignee
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" />
+                        </div>
+                    </h3>
+                    <div class="chart-placeholder">Chart Placeholder</div>
+                </div>
+
+                <div class="chart-card" draggable="true">
+                    <h3>
+                        Open Tasks by Assignee
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" />
+                        </div>
+                    </h3>
+                    <div class="chart-placeholder">Chart Placeholder</div>
+                </div>
+            </div>
         </div>
+    </div>
 </body>
 </html>
-

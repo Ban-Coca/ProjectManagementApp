@@ -10,6 +10,8 @@ from django.contrib import messages
 from django.conf import settings
 from django.db import transaction
 from django.template.loader import render_to_string
+from django.contrib.auth import logout
+from django.urls import reverse
 
 def login_view(request):
     if request.method == 'POST':
@@ -50,7 +52,7 @@ def register(request):
                         auth_login(request, user)
                         messages.success(request, 'Registration successful!')
                         print("Registration successful!")  # For debugging
-                        return redirect('login')
+                        return redirect('auth:login')
                     else:
                         messages.error(request, 'Failed to authenticate after registration.')
                 else:
@@ -82,7 +84,14 @@ def forgot_password(request):
             email = render_to_string(email_template_name, context) # type: ignore
             send_mail(subject, email, settings.DEFAULT_FROM_EMAIL, [user.email])
             messages.success(request, 'A link to reset your password has been sent to your email.')
-            return redirect('login')
+            return redirect('auth:login')
         except User.DoesNotExist:
             messages.error(request, 'No user is associated with this email address.')
     return render(request, 'password_reset.html')  # Render the password reset template
+
+def custom_logout(request):
+    logout(request)
+    return redirect('auth:logged_out')
+
+def logged_out(request):
+    return render(request, 'loggedout.html')

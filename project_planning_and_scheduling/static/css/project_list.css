@@ -10,11 +10,6 @@ html, body {
     flex-grow: 1;
     flex-direction: row;
 }
-hr{
-    margin-top: 300px;
-    width: 150px;
-    background-color: black;
-}
 .main-content {
     flex-grow: 1;
     padding: 20px;
@@ -30,7 +25,9 @@ hr{
     margin-bottom: 10px;
 }
 
-a {
+.project-card a {
+    min-height: 100px;
+    width: 100%;
     color: inherit;
     text-decoration: none;
 }
@@ -71,6 +68,7 @@ a {
 }
 
 .project-card {
+    align-items:flex-start;
     min-height: 100px;
     width: calc(100% - 40px);
     background-color: #fff;
@@ -88,11 +86,19 @@ a {
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     background-color: #f0f0f0;
 }
-
+.project-info{
+    display: flex;
+}
 .project-card h3 {
-    margin: 0;
+    margin: 20 0 0 0;
     color: #333;
     transition: color 0.3s ease;
+}
+
+.right-list{
+    margin-top: 20px;
+    align-items: center;
+    margin-left: 450px;
 }
 
 .project-card p {

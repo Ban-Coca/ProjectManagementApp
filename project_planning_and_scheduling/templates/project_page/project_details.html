@@ -6,7 +6,8 @@
     <title>{{ project.title }} - Project Details</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
-    <script src="{% static 'js/project_detail.js' %}" defer></script> 
+    <script src="{% static 'js/project_detail.js' %}" defer></script>
+    <script src="{% static 'js/add_member.js' %}" defer></script> 
 </head>
 <body>
 {% block content %}
@@ -21,7 +22,6 @@
                     <button class="tab-link" data-tab="task_table">Tasks</button>
                     <button class="tab-link" data-tab="members">Board</button>
                 </div>
-                
             </div>
             <div id="overview" class="tab_content active">
                 <div class="project-description">
@@ -29,16 +29,18 @@
                     <p>{{ project.description }}</p>
                 </div>
                 <div class="project-details">
-                    <div>
+                    <div class="deadline">
                         <h3>Deadline</h3>
                         <p>{{ project.end_date }}</p>
                     </div>
                     <div>
-                        <h3>Members</h3>
+                        <div class="member-header">
+                            <h3>Members</h3>
+                            <button id="addMemberButton" class="add-member-btn">+</button>
+                        </div>
                         <p>{{ project.owner.username }}</p>
                         <div class="members">
                             {% for member in members %}
-                                <span class="member">{{ member.user.username }}</span>
                             {% endfor %}
                         </div>
                     </div>
@@ -61,6 +63,8 @@
                 {% include 'task_management/kanban_board.html' %}
             </div> 
         </div>
+        <!-- Include the Create Project Modal -->
+        {% include 'project_page/addmembermodal.html' %}
     </div>
 {% endblock %}
 </body>

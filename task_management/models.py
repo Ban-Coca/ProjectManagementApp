@@ -24,7 +24,6 @@ class Tasks(models.Model):
     created_by = models.CharField(max_length=100)
     assigned_to = models.CharField(max_length=100)
 
-
     @staticmethod
     def generate_task_id():
         return "TASK" + str(uuid.uuid4().fields[-1])[:6].upper()

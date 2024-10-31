@@ -18,6 +18,19 @@ html, body {
     margin-top: 60px;
     height: calc(98vh - 90px); /* Adjust height considering the search box */
 }
+.member-header{
+    display: flex;
+    align-items: center;
+    height: 55px;
+}
+.add-member-btn {
+    margin-left: 15px;
+    height: 30px;
+    width: 30px;
+    text-decoration: none; 
+    border-radius: 10px;
+    transition: background-color 0.3s; /* Smooth transition */
+}
 #overview, #task_table {
     background-color: #e0e0e0;
     height: 69vh;
@@ -66,6 +79,10 @@ html, body {
     margin-left: 20px;
 }
 
+.deadline p{
+    margin-top: 32px;
+}
+
 .members {
     display: flex;
     gap: 10px;
@@ -79,9 +96,10 @@ html, body {
 
 .tasks {
     margin-left: 20px;
+    margin-top: 20px;
 }
 
-.main-content button {
+.project-nav button {
     background-color: #A49898; /* Button color */
     color: #fff; /* Text color */
     padding: 10px 15px; /* Padding */

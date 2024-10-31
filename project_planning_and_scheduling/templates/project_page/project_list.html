@@ -25,9 +25,14 @@
                             {% for project in projects %}
                                 <div class="project-card">
                                     <a href="{% url 'project_planning_and_scheduling:project_detail' project.id %}">
-                                        <div data-project-id="{{ project.id }}">
-                                            <h3>{{ project.title }}</h3>
-                                            <p>Deadline: {{ project.end_date }}</p>
+                                        <div data-project-id="{{ project.id }}" class="project-info">
+                                            <div class="left-list">
+                                                <h3>{{ project.title }}</h3>
+                                                <p>Deadline: {{ project.end_date }}</p>
+                                            </div>
+                                            <div class="right-list">
+                                                <h3>Status: {{ project.status }}</h3>
+                                            </div>
                                         </div>
                                     </a>
                                     <div class="more-options">

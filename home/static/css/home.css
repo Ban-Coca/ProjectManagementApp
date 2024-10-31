@@ -75,11 +75,11 @@ html, body {
     border-radius: 5px; /* Keep the corners rounded on hover */
 }
 
-.project-card p {
+.project-card p,
+.project-card h3 {
     overflow: hidden; /* Hide overflow content */
     text-overflow: ellipsis; /* Truncate overflowing text */
     white-space: nowrap; /* Prevent text from wrapping to a new line */
-    margin: 0; /* Remove any default margin */
 }
 
 

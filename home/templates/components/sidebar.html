@@ -19,10 +19,10 @@
                 </a>
             </li>
             <!-- Check if "Dashboards" is meant to be different from "Home" -->
-            <li class="nav-container {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                <a href="{% url 'dashboard:dashboard' %}" class="nav-link" aria-label="Dashboards">
+            <li class="nav-container {% if request.resolver_match.url_name == 'dashboard_view' %}active{% endif %}">
+                <a href="{% url 'dashboard:dashboard_view' %}" class="nav-link" aria-label="Dashboards">
                     <div class="nav-item">
-                        <img src="{% static 'images/home.png' %}" alt="Dashboards Icon" class="sidebar-icon">
+                        <img src="{% static 'images/dashboard.png' %}" alt="Dashboards Icon" class="sidebar-icon">
                         <p>Dashboard</p>
                     </div>
                 </a>
@@ -32,15 +32,18 @@
             <hr class="underline_sidebar">
             <ul>
                 <li class="nav-container">
-                    <a href="{% url 'auth:login' %}" class="nav-link" aria-label="Logout">
-                        <div class="nav-item">
-                            <img src="{% static 'images/logout.png' %}" alt="Dashboards Icon" class="sidebar-icon">
-                            <p>Logout</p>
-                        </div>
-                    </a>
+                    <form action="{% url 'auth:logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link" aria-label="Logout" style="background: none; border: none; padding: 0; color: inherit;">
+                            <div class="nav-item">
+                                <img src="{% static 'images/logout.png' %}" alt="Logout Icon" class="sidebar-icon">
+                                <p>Logout</p>
+                            </div>
+                        </button>
+                    </form>
                 </li>
                 <li class="nav-container">
-                    <a href="{% url 'home:home' %}" class="nav-link" aria-label="Logout">
+                    <a href="{% url 'home:home' %}" class="nav-link" aria-label="Help">
                         <div class="nav-item">
                             <img src="{% static 'images/help.png' %}" alt="Dashboards Icon" class="sidebar-icon">
                             <p>Help</p>
@@ -55,11 +58,12 @@
 
 <style>
     .underline_sidebar{
-        margin-top: 300px;
-        width: 150px;
+        margin-top: 330px;
+        width: 190px;
         border: none;
         height: 2px;
         background-color: #000;
+        margin-bottom: 30px;
     }
     .sidebar nav{
         margin-top: 20px;
@@ -93,7 +97,7 @@
         display: flex;
     }
     .sidebar p{
-        margin-left: 40px;
+        margin-left: 30px;
     }
     .nav-link {
         width: 100%;
@@ -105,6 +109,7 @@
     .sidebar-icon {
         margin-top: 18px;
         width: 20px;  /* Adjust width as needed */
+        margin-left: 15px;
         height: 20px; /* Adjust height as needed */
         margin-right: 8px; /* Space between the icon and text */
         vertical-align: middle; /* Align icon vertically with text */

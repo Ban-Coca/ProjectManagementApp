@@ -127,6 +127,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "project_planning_and_scheduling" / "static",
     BASE_DIR / "user_authentication" / "static",
     BASE_DIR / "task_management" / "static",
+    BASE_DIR / "dashboard" / "static",
 ]
 
 # Default primary key field type

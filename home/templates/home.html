@@ -14,7 +14,7 @@
         {% block content %}
         <div class="main-content">
             <div class="header">
-                <h1>Welcome, {{ user.username }}!</h1>
+                <h1>Welcome, {{ user.email }}!</h1>
             </div>
             <div class="projects">
                 <h2>Your Projects</h2>
@@ -25,7 +25,7 @@
                             <div class="project-card">
                                 <div data-project-id="{{ project.id }}">
                                     <h3>{{ project.title }}</h3>
-                                    <p>{{ project.description }}</p><br><br>
+                                    <p>{{ project.description }}</p><br>
                                     <p>Deadline: {{ project.end_date|date:"m/d/Y" }}</p>
                                 </div>
                             </div>
