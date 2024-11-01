@@ -144,6 +144,11 @@ html, body {
     animation: fadeInUp 0.5s ease forwards; /* Fade in and slide up animation */
 }
 
+.charts-grid h3{
+    display: flex;
+    justify-content: space-between;
+}
+
 .chart-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
