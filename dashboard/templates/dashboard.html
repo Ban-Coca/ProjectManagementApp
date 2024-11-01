@@ -63,7 +63,7 @@
                         </div>
                     </h3>
                     <div class="stat-number">{{ completed_tasks }}</div>
-                    <div class="stat-label">tasks in progress</div>
+                    <div class="stat-label">Tasks in Progress</div>
                 </div>
 
                 <div class="stat-card" draggable="true">
@@ -74,7 +74,7 @@
                         </div>
                     </h3>
                     <div class="stat-number">0</div>
-                    <div class="stat-label">tasks completed</div>
+                    <div class="stat-label">Tasks Completed</div>
                 </div>
             </div>
 
@@ -101,5 +101,25 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Select all stat cards and chart cards
+            const statCards = document.querySelectorAll('.stat-card');
+            const chartCards = document.querySelectorAll('.chart-card');
+
+            // Apply animation delay to stat cards
+            statCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`; // Delay based on index
+                card.style.opacity = '1'; // Make visible for animation
+            });
+
+            // Apply animation delay to chart cards
+            chartCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`; // Delay based on index
+                card.style.opacity = '1'; // Make visible for animation
+            });
+        });
+    </script>
 </body>
 </html>

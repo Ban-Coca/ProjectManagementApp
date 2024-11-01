@@ -7,27 +7,28 @@
 <style>
     .search-box {
         display: flex;
-        justify-content: flex-start; /* Align items to the start */
         align-items: center; /* Center items vertically */
         padding: 10px; /* Adjust padding */
         background-color: #D9D9D9; /* Background color for the search bar */
-        width: 100%; /* Full width */
+        width: 99%; /* Full width */
         position: fixed; /* Stay at the top even when scrolling */
         top: 0;
         left: 0;
         z-index: 1000; /* Keep the search bar above other elements */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for better visibility */
+        justify-content: space-between; /* Space between search bar and notification icon */
     }
 
     .search-bar {
-        width: 40%; /* Adjust this based on how wide you want the search bar */
+        max-width: 550px; /* Set a maximum width for the search bar */
+        min-width: 10px; /* Minimum width for the search bar */
+        width: 100%; /* Full width of the space available */
         padding: 10px 40px; /* Space for text and icon */
         background-color: #A49898; /* Set a color to check visibility */
         color: black;
         border: none;
         border-radius: 5px; /* Rounded corners */
-        margin-left: 450px; /* Center the search bar */
-        margin-right: 10px; /* Space between search bar and notification icon */
+        margin: 0 auto; /* Center the search bar in the available space */
 
         /* Background image for the search icon */
         background-image: url('/static/images/search.png'); /* Use the correct path */
@@ -44,7 +45,17 @@
         width: 24px; /* Icon size */
         height: 24px; /* Icon size */
         cursor: pointer; /* Change cursor to pointer */
-        margin-left: auto; /* Push the icon to the right */
-        margin-right: 30px;
+        margin-right: 10px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .search-bar {
+            padding: 10px 20px; /* Adjust padding for smaller screens */
+        }
+        
+        .notification-icon {
+            margin-left: 10px; /* Space between search bar and notification icon */
+        }
     }
 </style>

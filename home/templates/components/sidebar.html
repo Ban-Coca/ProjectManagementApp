@@ -28,7 +28,7 @@
                 </a>
             </li>
         </ul>    
-        <div>
+        <div class="sidebar-footer">
             <hr class="underline_sidebar">
             <ul>
                 <li class="nav-container">
@@ -45,7 +45,7 @@
                 <li class="nav-container">
                     <a href="{% url 'home:home' %}" class="nav-link" aria-label="Help">
                         <div class="nav-item">
-                            <img src="{% static 'images/help.png' %}" alt="Dashboards Icon" class="sidebar-icon">
+                            <img src="{% static 'images/help.png' %}" alt="Help Icon" class="sidebar-icon">
                             <p>Help</p>
                         </div>
                     </a>
@@ -55,65 +55,74 @@
     </nav>
 </div>
 
-
 <style>
-    .underline_sidebar{
-        margin-top: 330px;
-        width: 190px;
+    .underline_sidebar {
+        width: 100%;
+        max-width: 190px;
         border: none;
         height: 2px;
         background-color: #000;
         margin-bottom: 30px;
     }
-    .sidebar nav{
-        margin-top: 20px;
-    }
 
-    .sidebar ul {
-        height: auto;
+    .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
 
     .sidebar {
         margin-top: 57px;
-        min-width: 228px;
+        width: 100%;
+        max-width: 228px;
         background-color: #A49898 !important; /* Force the background color */
         height: calc(100.40vh - 60px); /* Full height minus search bar height */
         display: flex; /* Enable flexbox */
         flex-direction: column; /* Stack children vertically */
+        padding: 0 10px; /* Add horizontal padding for responsiveness */
     }
 
     .nav-container {
         display: flex; /* Use flexbox */
         align-items: center; /* Center vertically */
         padding: 5px;
-        width: 207px;
-        margin-left: 5px;
-        height: 50px; /* Set height to auto */
-        margin-bottom: 5px; /* Add space below the home link */
+        width: 96%;
+        margin: 5px 0; /* Add vertical space */
         border-radius: 10px;
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
     }
 
-    .nav-item{
+    .nav-item {
         display: flex;
+        flex-grow: 1; /* Allow the nav item to grow */
     }
-    .sidebar p{
-        margin-left: 30px;
+
+    .sidebar p {
+        margin-left: 10px; /* Adjusted for responsiveness */
+        font-size: 16px; /* Adjust font size */
     }
+
     .nav-link {
-        width: 100%;
+        align-items: center; /* Center items vertically */
         text-decoration: none; /* Removes the underline from links */
         color: black; /* Ensures link color inherits from parent */
         font-size: 18px; /* Adjust the font size */
         padding: 5px; /* Add some padding */
+        width: 100%;
     }
+
     .sidebar-icon {
-        margin-top: 18px;
-        width: 20px;  /* Adjust width as needed */
+        margin-top: 13px;
         margin-left: 15px;
-        height: 20px; /* Adjust height as needed */
+        width: 20px; /* Fixed width */
+        height: 20px; /* Fixed height */
         margin-right: 8px; /* Space between the icon and text */
         vertical-align: middle; /* Align icon vertically with text */
         display: inline-block; /* Ensure it behaves like inline elements */
+    }
+
+    .sidebar-footer {
+        margin-top: auto; /* Pushes footer items to the bottom */
     }
 
     /* Active state for nav containers */
@@ -124,16 +133,17 @@
     /* Hover effect only for non-active nav containers */
     .nav-container:not(.active):hover {
         background-color: rgba(228, 228, 228, 0.5); /* Light gray with 50% transparency */
-        transition: background-color 0.3s; /* Smooth transition for hover effect */
     }
 
     /* Prevent hover effect on active items */
     .nav-container.active:hover {
         background-color: #796262; /* Keeps the active color unchanged on hover */
     }
+
     .sidebar ul {
         list-style-type: none;
         padding: 0;
-        margin: 0;
+        margin: 30 0;
+        flex-grow: 1;
     }
 </style>

@@ -47,6 +47,15 @@
         </div>
         {% endblock %}
     </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const projectCards = document.querySelectorAll(".project-card");
+            projectCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`; // Set delay based on index
+                card.style.opacity = "1"; // Ensure opacity is set to 1 for visibility
+            });
+        });
+    </script>
 </body>
 </html>
-

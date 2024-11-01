@@ -10,6 +10,7 @@ html, body {
     flex-grow: 1;
     flex-direction: row; /* Ensure the sidebar and main content are in a row */
 }
+
 .main-content {
     flex-grow: 1;
     padding: 20px;
@@ -22,6 +23,7 @@ html, body {
     scrollbar-width: thin; /* For Firefox */
     scrollbar-color: #A49898 #f0f0f0; /* For Firefox */
 }
+
 /* Header with search bar and button */
 .header {
     display: flex;
@@ -38,6 +40,7 @@ html, body {
     margin-bottom: 20px;
     width: 100%; /* Make it span the full width */
 }
+
 /* Projects and tasks sections */
 .tasks {
     margin-top: 30px;
@@ -55,11 +58,23 @@ html, body {
     text-decoration: none; /* Remove underline */
 }
 
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .project-card {
     background-color: #D9D9D9;
     padding: 15px;
     border-radius: 5px;
-    width: 155px;
+    max-width: 155px;
+    width: 100%;
     height: 150px; /* Set a fixed height for the card */
     display: flex;
     flex-direction: column;
@@ -68,6 +83,8 @@ html, body {
     text-overflow: ellipsis; /* Truncate overflowing text */
     white-space: nowrap; /* Prevent text from wrapping to a new line */
     transition: background-color 0.3s; /* Smooth transition for the hover effect */
+    opacity: 0; /* Start with opacity 0 for animation */
+    animation: fadeInUp 0.5s ease forwards; /* Include your animation here */
 }
 
 .project-card:hover {
@@ -81,7 +98,6 @@ html, body {
     text-overflow: ellipsis; /* Truncate overflowing text */
     white-space: nowrap; /* Prevent text from wrapping to a new line */
 }
-
 
 .task {
     background-color: #ddd;
@@ -113,13 +129,13 @@ html, body {
     margin: auto; /* Center within the modal */
     margin-top: 90px; /* Adjust this value to add space from the top */
 }
+
 /* Button of modal style */
 .button-container {
     display: flex; /* Enable flexbox */
     justify-content: center; /* Center horizontally */
     margin-top: 20px; /* Optional: Add space above the button */
 }
-
 
 /* Close button */
 .close {
@@ -180,4 +196,18 @@ label {
 
 h2 {
     margin-top: 0; /* Remove top margin */
+}
+
+/* Scrollbar styling for WebKit browsers */
+.main-content::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: #f0f0f0; /* Background of the scrollbar track */
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background-color: #A49898; /* Color of the scrollbar thumb */
+    border-radius: 4px; /* Round edges of the scrollbar thumb */
 }

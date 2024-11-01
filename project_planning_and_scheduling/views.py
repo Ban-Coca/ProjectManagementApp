@@ -52,7 +52,7 @@ def create_project(request):
                     start_date=start_date,
                     end_date=deadline,
                     owner=request.user,
-                    status='TODO'  # Changed to match your model's STATUS choices
+                    status='In Progress'  # Changed to match your model's STATUS choices
                 )
                 new_project.save()
 
@@ -60,7 +60,7 @@ def create_project(request):
                 ProjectMember.objects.create(
                     project=new_project,
                     user=request.user,
-                    role='OWNER'  # Changed to match your model's ROLE_CHOICES
+                    role='Owner'  # Changed to match your model's ROLE_CHOICES
                 )
 
             return redirect('project_planning_and_scheduling:projects_list')

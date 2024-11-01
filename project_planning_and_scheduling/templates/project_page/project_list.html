@@ -59,5 +59,13 @@
         <!-- Include the Delete Confirmation Modal -->
         {% include 'project_page/deleteprojectmodal.html' %}
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const projectCards = document.querySelectorAll(".project-card");
+            projectCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
 </body>
 </html>

@@ -38,6 +38,8 @@ html, body {
     margin-bottom: 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     text-align: center;  /* Centers text within the div */
+    opacity: 0; /* Start hidden */
+    animation: fadeInUp 0.5s ease forwards; /* Fade in and slide up animation */
 }
 
 .dashboard-welcome h2 {
@@ -49,7 +51,6 @@ html, body {
     color: #666;
     margin: 0;
 }
-
 
 .dropdown-content {
     display: none;
@@ -96,6 +97,8 @@ html, body {
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     cursor: move;
+    opacity: 0; /* Start hidden */
+    animation: fadeInUp 0.5s ease forwards; /* Fade in and slide up animation */
 }
 
 .stat-card:hover {
@@ -129,13 +132,7 @@ html, body {
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 20px;
 }
-.chart-card h3 {
-    margin: 0 0 15px 0;
-    color: #333;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+
 .chart-card {
     background-color: #fff;
     border-radius: 10px;
@@ -143,6 +140,8 @@ html, body {
     min-height: 300px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    opacity: 0; /* Start hidden */
+    animation: fadeInUp 0.5s ease forwards; /* Fade in and slide up animation */
 }
 
 .chart-card:hover {
@@ -175,9 +174,11 @@ html, body {
 .proj_select:hover {
     background-color: #b0a8a8;
 }
+
 .dropdown-content.show {
     display: block;
 }
+
 /* More options dropdown */
 .more-options {
     position: relative;
@@ -203,5 +204,16 @@ html, body {
     
     .charts-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
