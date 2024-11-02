@@ -121,14 +121,14 @@ class KanbanBoard {
     
         addTaskForm.onsubmit = async (e) => {
             e.preventDefault();
-            const formData = getFormData();
+            const formData = this.getFormData();
             
             try {
                 const response = await fetch('/tasks/add_task/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
+                        'X-CSRFToken': this.getCookie('csrftoken')
                     },
                     body: JSON.stringify(formData)
                 });
@@ -140,14 +140,14 @@ class KanbanBoard {
                 }
     
                 if (data.success) {
-                    // Toast.show('Task added successfully', 'success');
+                    Toast.show('Task added successfully', 'success');
                     addTaskForm.reset();
                     modal.style.display = 'none';
                     this.loadTasks(); // Refresh tasks instead of page reload
                 }
             } catch (error) {
                 console.error('Error:', error);
-                // Toast.show(error.message, 'error');
+                Toast.show(error.message, 'error');
             }
         };
     }
@@ -219,12 +219,51 @@ class KanbanBoard {
             if (!response.ok) {
                 throw new Error('Failed to update task status');
             }
-
+            if (window.taskManagement) {
+                window.taskManagement.fetchTasks();
+            }
+            this.loadTasks();
             return await response.json();
         } catch (error) {
             throw error;
         }
     }
+    getFormData() {
+        const projectId = this.getProjectIdFromUrl();
+        console.log('Project ID:', projectId);  
+        return {
+            project_id: projectId,
+            title: document.getElementById('taskTitle')?.value,
+            description: document.getElementById('taskDescription')?.value,
+            status: document.getElementById('taskStatus')?.value,
+            priority: document.getElementById('taskPriority')?.value,
+            dueDate: document.getElementById('taskDueDate')?.value,
+            assignee: document.getElementById('taskAssignee')?.value,
+        };
+    }
+    
+    getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    getProjectIdFromUrl() {
+        const url = window.location.pathname;
+        const regex = /\/projects\/(\d+)\//;
+        const match = url.match(regex);
+        console.log('Match:', match);
+        return match ? match[1] : null;
+    }
+
 }
 
 // Initialize the Kanban board when the page loads
@@ -232,52 +271,3 @@ document.addEventListener('DOMContentLoaded', () => {
     const board = new KanbanBoard();
 });
 
-// const Toast = {
-//     show(message, type = 'success') {
-//         const existingToast = document.getElementById('toastNotification');
-//         if (existingToast) existingToast.remove();
-        
-//         const toast = document.createElement('div');
-//         toast.id = 'toastNotification';
-//         toast.className = `toast-notification ${type}`;
-//         toast.textContent = message;
-        
-//         document.body.appendChild(toast);
-        
-//         setTimeout(() => {
-//             toast.classList.add('fade-out');
-//             setTimeout(() => {
-//                 toast.remove();
-//                 if (type === 'success') {
-//                     fetchTasks(); // Refresh data instead of page reload
-//                 }
-//             }, 300);
-//         }, 2000);
-//     }
-// };
-
-function getFormData() {
-    return {
-        title: document.getElementById('taskTitle')?.value,
-        description: document.getElementById('taskDescription')?.value,
-        status: document.getElementById('taskStatus')?.value,
-        priority: document.getElementById('taskPriority')?.value,
-        dueDate: document.getElementById('taskDueDate')?.value,
-        assignee: document.getElementById('taskAssignee')?.value
-    };
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}

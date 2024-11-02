@@ -6,13 +6,14 @@ from django.core.exceptions import ValidationError
 import json
 import logging
 from .models import Tasks
+from project_planning_and_scheduling.models import Project
 from .forms import TaskForm
 from user_authentication.models import User
 from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 # Create your views here.
-def task_management(request):
+def task_management(request, id):
     return render(request, 'task_management/task_management.html')
 
 def kanban_board(request):
@@ -38,20 +39,24 @@ def list_tasks(request):
 def add_task(request):
     if request.method == 'POST':
         try:
+            print(f"Raw request body: {request.body}")
             data = json.loads(request.body)
+            
+            
             task = Tasks(
+                project_id=data['project_id'], # Ensure this matches your model field
                 title=data['title'],
                 description=data['description'],
                 status=data['status'],
                 priority=data['priority'],
                 due_date=data['dueDate'],
-                assigned_to=data['assignee']  # Ensure this matches your model field
+                assigned_to=data['assignee'],
+                 # Ensure this matches your model field
             )
             task.save()
             return JsonResponse({'success': True})
         except Exception as e:
-            # Log the error message
-            print(f"Error: {str(e)}")
+            logger.error(f"Error: {str(e)}")
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
@@ -103,8 +108,7 @@ def update_task(request, task_id):
         # Save the changes
         task.save(update_fields=[field])
 
-        # Print for debugging
-        print(f'Updated task {task_id}: {field} = {value}')
+        logger.debug(f'Updated task {task_id}: {field} = {value}')
 
         return JsonResponse({
             'success': True,
@@ -116,22 +120,19 @@ def update_task(request, task_id):
         })
 
     except json.JSONDecodeError:
-        print('Invalid JSON in request body')
+        logger.error('Invalid JSON in request body')
         return JsonResponse({
             'success': False,
             'message': 'Invalid JSON in request body'
         }, status=400)
     
     except Exception as e:
-        # Print the error for debugging
-        print(f"Error updating task {task_id}: {str(e)}")
-        
+        logger.error(f"Error updating task {task_id}: {str(e)}")
         return JsonResponse({
             'success': False,
             'message': 'An unexpected error occurred',
             'error': str(e)
         }, status=500)
-
 
 @require_http_methods(["DELETE"])
 def delete_task(request, task_id):
@@ -139,13 +140,11 @@ def delete_task(request, task_id):
     task.delete()
     return JsonResponse({'success': True})
 
-
-# def search_users(request):
-#     query = request.GET.get('q', '')
-#     users = User.objects.filter(
-#         Q(username__icontains=query) |
-#         Q(email__icontains=query)
-#     ).values('id', 'username', 'email')[:10]
+def search_users(request):
+    query = request.GET.get('q', '')
+    users = User.objects.filter(
+        Q(username__icontains=query) |
+        Q(email__icontains=query)
+    ).values('id', 'username', 'email')[:10]
     
-#     return JsonResponse(list(users), safe=False)
-    
+    return JsonResponse(list(users), safe=False)

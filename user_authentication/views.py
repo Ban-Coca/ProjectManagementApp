@@ -50,7 +50,8 @@ def register(request):
                         auth_login(request, user)
                         messages.success(request, 'Registration successful!')
                         print("Registration successful!")  # For debugging
-                        return redirect('login')
+                        
+                        return redirect('auth:login')
                     else:
                         messages.error(request, 'Failed to authenticate after registration.')
                 else:

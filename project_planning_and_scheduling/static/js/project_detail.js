@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add active class to clicked button and corresponding content
             button.classList.add('active');
             const tabId = button.getAttribute('data-tab');
+            const tabContent = document.getElementById(tabId);
             document.getElementById(tabId).classList.add('active');
         });
     });

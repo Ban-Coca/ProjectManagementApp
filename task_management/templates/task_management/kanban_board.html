@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <title>Task Management</title>
     <style>
         .kanban-container * {
             margin: 0;
@@ -20,6 +19,8 @@
 
         .kanban-container {
             padding: 2rem;
+            display: flex;
+            justify-content: space-around;
         }
 
         .kanban-header {
@@ -36,7 +37,7 @@
         }
 
         .column {
-            background: #e2e8f0;
+            background: #D9D9D9;
             border-radius: 0.5rem;
             padding: 1rem;
             min-width: 320px;
@@ -47,6 +48,7 @@
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 1rem;
+            position: sticky;
             padding: 0.5rem;
             display: flex;
             justify-content: space-between;
@@ -149,12 +151,12 @@
 </head>
 <body>
     <div class="kanban-container">
-        <div class="kanban-header">
-            <button id="addTaskBtn" class="addTaskBtn">Add Task</button>
-        </div>
         <div id="kanban-board" class="kanban-board">
             <!-- Columns will be dynamically added here -->
         </div>
+        {% comment %} <div class="kanban-header">
+            <button id="addTaskBtn" class="addTaskBtn">Add Task</button>
+        </div> {% endcomment %}
     </div>
     {% include "task_management/add_tasks.html" %}
     <script src="{% static 'javascript/kanban.js' %}"></script>
