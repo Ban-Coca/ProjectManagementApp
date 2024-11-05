@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import SignUpForm, CustomAuthenticationForm
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -11,8 +11,11 @@ from django.conf import settings
 from django.db import transaction
 from django.template.loader import render_to_string
 from django.contrib.auth import logout
-from django.urls import reverse
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
+
+# Your existing views remain unchanged
 def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
@@ -33,25 +36,16 @@ def register(request):
         try:
             with transaction.atomic():
                 if form.is_valid():
-                    # Create the user but don't save to DB yet
                     user = form.save(commit=False)
-                    
-                    # Add any additional fields
                     user.first_name = form.cleaned_data.get('first_name')
                     user.last_name = form.cleaned_data.get('last_name')
-                    
-                    # Save the user to the database
                     user.save()
-                    
-                    # Get the raw password to authenticate
                     raw_password = form.cleaned_data.get('password1')
-                    
-                    # Authenticate and login the user
                     user = authenticate(username=user.username, password=raw_password)
                     if user is not None:
                         auth_login(request, user)
                         messages.success(request, 'Registration successful!')
-                        print("Registration successful!")  # For debugging
+                        print("Registration successful!")
                         return redirect('auth:login')
                     else:
                         messages.error(request, 'Failed to authenticate after registration.')
@@ -61,33 +55,44 @@ def register(request):
                             messages.error(request, f"{field}: {error}")
         except Exception as e:
             messages.error(request, f'Registration failed: {str(e)}')
-            print(f"Registration error: {str(e)}")  # For debugging
+            print(f"Registration error: {str(e)}")
     else:
         form = SignUpForm()
     return render(request, 'register.html', {'form': form})
 
+# Updated password reset views
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         try:
             user = User.objects.get(email=email)
-            subject = 'Password Reset Requested'
-            email_template_name = 'password_reset_email.html'  # Email template name
-            context = {
-                'email': user.email,
-                'domain': request.META['HTTP_HOST'],
-                'site_name': 'Your Site Name',  # Customize your site name
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-                'protocol': 'http',
-            }
-            email = render_to_string(email_template_name, context) # type: ignore
-            send_mail(subject, email, settings.DEFAULT_FROM_EMAIL, [user.email])
-            messages.success(request, 'A link to reset your password has been sent to your email.')
-            return redirect('auth:login')
+            # Redirect directly to password reset page for the user
+            return redirect('auth:set_new_password', email=email)
         except User.DoesNotExist:
             messages.error(request, 'No user is associated with this email address.')
-    return render(request, 'password_reset.html')  # Render the password reset template
+    return render(request, 'password_reset.html')
+
+
+def set_new_password(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        messages.error(request, 'Invalid email address.')
+        return redirect('forgot_password')
+
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if new_password and new_password == confirm_password:
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, 'Your password has been successfully reset.')
+            return redirect('auth:login')
+        else:
+            messages.error(request, 'The passwords do not match.')
+
+    return render(request, 'password.html', {'email': email})
 
 def custom_logout(request):
     logout(request)
