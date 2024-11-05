@@ -15,7 +15,7 @@ class Tasks(models.Model):
     ]
 
     task_id = models.CharField(max_length=20, primary_key=True, editable=False)
-    project_id = models.CharField(max_length=20)
+    project = models.ForeignKey('project_planning_and_scheduling.Project', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS)
