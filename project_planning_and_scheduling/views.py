@@ -52,7 +52,7 @@ def create_project(request):
                     start_date=start_date,
                     end_date=deadline,
                     owner=request.user,
-                    status='In Progress'  # Changed to match your model's STATUS choices
+                    status='To Do'  # Changed to match your model's STATUS choices
                 )
                 new_project.save()
 
@@ -105,6 +105,7 @@ def delete_project(request, pk):
         return JsonResponse({'message': 'Project deleted successfully.'}, status=204)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+"""""
 # New views for member management
 @login_required
 def get_project_members(request, project_id):
@@ -212,3 +213,4 @@ def add_project_member(request, project_id):
         return JsonResponse({"error": "Invalid JSON data"}, status=400)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+"""
