@@ -19,6 +19,21 @@ def task_management(request, id):
 def kanban_board(request):
     return render(request, 'task_management/kanban_board.html')
 
+def list_by_project(request, project_id):
+    tasks = Tasks.objects.filter(project_id=project_id)
+    task_list = [{
+        'task_id': task.task_id,
+        'project_id': task.project_id,
+        'title': task.title,
+        'description': task.description,
+        'status': task.status,
+        'priority': task.priority,
+        'due_date': task.due_date,
+        'created_by': task.created_by,
+        'assigned_to': task.assigned_to
+        } for task in tasks]
+    return JsonResponse({'task_list': task_list})
+
 @require_http_methods(["GET"])
 def list_tasks(request):
     tasks = Tasks.objects.all()

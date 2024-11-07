@@ -11,15 +11,20 @@ class KanbanBoard {
     }
 
     async init() {
-        await this.loadTasks();
+        const projectId = this.getProjectIdFromUrl();
+        await this.loadTasks(projectId);
         this.setupEventListeners();
         this.setupModal();
         this.setupTaskForm();
     }
 
-    async loadTasks() {
+    async loadTasks(projectId = null) {
+        let url = '/tasks/task_list/';
+        if (projectId) {
+            url = `/tasks/list_by_project/${projectId}/`;
+        }
         try {
-            const response = await fetch('/tasks/task_list/');
+            const response = await fetch(url);
             const data = await response.json();
             console.log(data);
             // Reset columns
@@ -118,10 +123,11 @@ class KanbanBoard {
             console.error('Task form not found');
             return;
         }
-    
+        
         addTaskForm.onsubmit = async (e) => {
             e.preventDefault();
             const formData = this.getFormData();
+            console.log('Form data:', formData);
             
             try {
                 const response = await fetch('/tasks/add_task/', {
@@ -141,6 +147,7 @@ class KanbanBoard {
     
                 if (data.success) {
                     Toast.show('Task added successfully', 'success');
+                    console.log('Task added successfully:', data);
                     addTaskForm.reset();
                     modal.style.display = 'none';
                     this.loadTasks(); // Refresh tasks instead of page reload
@@ -270,4 +277,3 @@ class KanbanBoard {
 document.addEventListener('DOMContentLoaded', () => {
     const board = new KanbanBoard();
 });
-

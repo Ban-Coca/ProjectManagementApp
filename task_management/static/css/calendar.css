@@ -33,22 +33,25 @@
 /* Tooltip Styles */
 .task-tooltip {
     padding: 8px;
-    max-width: 250px;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
 }
 
 .task-tooltip h4 {
     margin: 0 0 8px 0;
-    color: #1f2937;
+    color: white;
 }
 
 .task-tooltip p {
     margin: 0 0 8px 0;
-    color: #4b5563;
+    color: white;
     font-size: 0.9em;
 }
 
 .task-meta {
     display: flex;
+    flex-direction: column;
     gap: 8px;
     margin-bottom: 8px;
 }
@@ -59,18 +62,20 @@
     font-size: 0.8em;
 }
 
+
+
 /* Status Colors */
-.status.pending {
+.status.TODO {
     background-color: #f3f4f6;
     color: #4b5563;
 }
 
-.status.in_progress {
+.status.INPROGRESS {
     background-color: #dbeafe;
-    color: #2563eb;
+    color: #34c759;
 }
 
-.status.completed {
+.status.DONE {
     background-color: #dcfce7;
     color: #16a34a;
 }
@@ -80,19 +85,19 @@
     text-transform: capitalize;
 }
 
-.priority.high {
+.priority.HIGH {
     background-color: #fee2e2;
     color: #dc2626;
 }
 
-.priority.medium {
+.priority.MEDIUM {
     background-color: #fef3c7;
     color: #d97706;
 }
 
-.priority.low {
+.priority.LOW {
     background-color: #dbeafe;
-    color: #2563eb;
+    color: #34c759;
 }
 
 .assignee {

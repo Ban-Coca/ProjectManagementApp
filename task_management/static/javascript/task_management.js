@@ -4,17 +4,6 @@ class TaskManagement{
         this.users = [];
     }
     
-    
-    // function initializeTaskManagement() {
-    //     // Initial tasks fetch
-    //     fetchTasks();
-        
-    //     // Modal setup
-    //     setupModal();
-        
-    //     // Form setup
-    //     setupTaskForm();
-    // }
     async initializeTaskManagement() {
         // Initial tasks fetch
         await this.fetchTasks();
@@ -28,8 +17,11 @@ class TaskManagement{
         const projectId = this.getProjectIdFromUrl();
         if (projectId) {
             console.log('Project ID from URL:', projectId);
-            // You can use the projectId for further processing if needed
+            await this.fetchTasksByProject(projectId);
+        } else {
+            await this.fetchTasks();
         }
+        //await this.fetchTasks();
     }
     async fetchTasks() {
         await fetch('/tasks/task_list/')
@@ -48,6 +40,23 @@ class TaskManagement{
             });
     }
     
+    async fetchTasksByProject(projectId) {
+        await fetch(`/tasks/list_by_project/${projectId}/`)
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to fetch tasks');
+                return response.json();
+            })
+            .then(data => {
+                console.log('Fetched tasks by project:', data);
+                this.tasks = data.task_list || [];
+                this.renderTasks(this.tasks);
+            })
+            .catch(error => {
+                console.error('Error fetching tasks by project:', error);
+                Toast.show('Failed to load tasks', 'error');
+            });
+    }
+
     setupModal() {
         const modal = document.getElementById('addTaskModal');
         const addTaskBtn = document.getElementById('addTaskBtn');
@@ -98,6 +107,7 @@ class TaskManagement{
     
                 if (data.success) {
                     Toast.show('Task added successfully', 'success');
+                    console.log('Task added successfully:', data);
                     addTaskForm.reset();
                     modal.style.display = 'none';
                     this.fetchTasks(); // Refresh tasks instead of page reload

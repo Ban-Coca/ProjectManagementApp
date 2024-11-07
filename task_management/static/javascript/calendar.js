@@ -5,15 +5,27 @@ class TaskCalendar {
     }
 
     init() {
-
         this.initializeCalendar();
         this.fetchTasks();
-        
+    }
+
+    getProjectIdFromUrl() {
+        const url = window.location.pathname;
+        const regex = /\/projects\/(\d+)\//;
+        const match = url.match(regex);
+        console.log('Match:', match);
+        return match ? match[1] : null;
     }
 
     async fetchTasks() {
+        const projectId = this.getProjectIdFromUrl();
+        if (!projectId) {
+            console.error('Project ID not found in URL');
+            return;
+        }
+
         try {
-            const response = await fetch('/tasks/task_list/');
+            const response = await fetch(`/tasks/list_by_project/${projectId}/`);
             if (!response.ok) throw new Error('Failed to fetch tasks');
             
             const data = await response.json();
@@ -43,7 +55,9 @@ class TaskCalendar {
                     content: this.generateTooltipContent(info.event),
                     placement: 'top',
                     arrow: true,
-                    theme: 'light-border'
+                    theme: 'light-border',
+                    allowHTML: true,
+                    
                 });
             }
         });
