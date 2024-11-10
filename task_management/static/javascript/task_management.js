@@ -6,7 +6,7 @@ class TaskManagement{
     
     async initializeTaskManagement() {
         // Initial tasks fetch
-        await this.fetchTasks();
+        //await this.fetchTasks();
         
         // Modal setup
         this.setupModal();
@@ -16,14 +16,13 @@ class TaskManagement{
 
         const projectId = this.getProjectIdFromUrl();
         if (projectId) {
-            console.log('Project ID from URL:', projectId);
             await this.fetchTasksByProject(projectId);
         } else {
             await this.fetchTasks();
         }
-        //await this.fetchTasks();
     }
-    async fetchTasks() {
+    async fetchTasks(projectId = null) {
+        
         await fetch('/tasks/task_list/')
             .then(response => {
                 if (!response.ok) throw new Error('Failed to fetch tasks');
@@ -110,7 +109,9 @@ class TaskManagement{
                     console.log('Task added successfully:', data);
                     addTaskForm.reset();
                     modal.style.display = 'none';
-                    this.fetchTasks(); // Refresh tasks instead of page reload
+                    const projectId = this.getProjectIdFromUrl();
+                    this.fetchTasksByProject(projectId);
+                    //this.fetchTasks(projectId); // Refresh tasks instead of page reload
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -544,7 +545,12 @@ class TaskManagement{
         .then(data => {
             if(data.success) {
                 Toast.show('Task deleted successfully', 'success');
-                this.fetchTasks();
+                const projectId = this.getProjectIdFromUrl();
+                if (projectId) {
+                    this.fetchTasksByProject(projectId);
+                } else {
+                    this.fetchTasks();
+                }
             }
         })
         .catch(error => console.error('Error:', error));
@@ -589,7 +595,12 @@ class Toast {
 
         if (type === 'success') {
             const taskManagement = new TaskManagement();
-            taskManagement.fetchTasks(); // Refresh data instead of page reload
+            const projectId = taskManagement.getProjectIdFromUrl();
+            if (projectId) {
+                taskManagement.fetchTasksByProject(projectId);
+            } else {
+                taskManagement.fetchTasks();
+            }
         }
         
         setTimeout(() => {
