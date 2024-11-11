@@ -1,0 +1,21 @@
+/* Ensure body and html take full height */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.under {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row; /* Ensure the sidebar and main content are in a row */
+}
+
+.main-content {
+    max-width: 183vh;
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f5f5f5;
+    margin-top: 60px;
+    height: calc(98vh - 90px); /* Adjust height considering the search box */
+}

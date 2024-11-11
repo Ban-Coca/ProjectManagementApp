@@ -148,3 +148,6 @@ def search_users(request):
     ).values('id', 'username', 'email')[:10]
     
     return JsonResponse(list(users), safe=False)
+
+def tasks_list(request):
+    return render(request, 'task_management/taskslist.html')
