@@ -19,6 +19,9 @@ def task_management(request, id):
 def kanban_board(request):
     return render(request, 'task_management/kanban_board.html')
 
+def user_tasks(request, id):
+    return render(request, 'task_management/taskslist.html')
+
 def list_by_project(request, project_id):
     tasks = Tasks.objects.filter(project_id=project_id)
     task_list = [{
