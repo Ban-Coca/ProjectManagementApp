@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,10 +8,10 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
     <script src="{% static 'js/project_detail.js' %}" defer></script>
-    <script src="{% static 'js/add_member.js' %}" defer></script> 
 </head>
 <body>
 {% block content %}
+    {% csrf_token %}
     {% include 'components/searchbar.html' %}
     <div class="under">
         {% include 'components/sidebar.html' %}
@@ -22,7 +23,7 @@
                     <button class="tab-link" data-tab="task_table">Tasks</button>
                     <button class="tab-link" data-tab="board">Board</button>
                     <button class="tab-link" data-tab="calendarTab">Calendar</button>
-                    <button class="tab-link" data-tabe="documents">Documents</button>
+                    <button class="tab-link" data-tab="documents">Documents</button>
                 </div>
             </div>
             <div id="overview" class="tab_content active">
@@ -35,14 +36,23 @@
                         <h3>Deadline</h3>
                         <p>{{ project.end_date }}</p>
                     </div>
-                    <div>
+                    <div class="project-members">
                         <div class="member-header">
                             <h3>Members</h3>
-                            <button id="addMemberButton" class="add-member-btn">+</button>
+                            {% if is_owner %}
+                            <button id="addMemberButton" data-project-id="{{ project.id }}" class="add-member-btn">
+                                <span class="plus-icon">+</span>
+                            </button>
+                            {% endif %}
                         </div>
-                        <p>{{ project.owner.username }}</p>
-                        <div class="members">
+                        <div class="members-list">
+                            <!-- Project Members -->
                             {% for member in members %}
+                            <div class="member-item">
+                                <div class="member-info">
+                                    <span class="member-name">{{ member.user.username }}</span>
+                                </div>
+                            </div>
                             {% endfor %}
                         </div>
                     </div>
@@ -60,7 +70,7 @@
             <div id="task_table" class="tab_content">
                 {% include 'task_management/task_management.html' %}
             </div>
-            
+
             <div id="board" class="tab_content">
                 {% include 'task_management/kanban_board.html' %}
             </div>
@@ -68,6 +78,7 @@
                 <div id='calendar'>{% include 'task_management/calendar.html' %}</div>
             </div>
         </div>
+
         <!-- Include the Create Project Modal -->
         {% include 'project_page/addmembermodal.html' %}
     </div>

@@ -60,6 +60,10 @@ html, body {
     justify-content: space-between;
 }
 
+.project-members .members-list{
+    display:flex;
+}
+
 .nav-button {
     display: flex;
     gap: 5px;

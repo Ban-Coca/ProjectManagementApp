@@ -6,49 +6,42 @@ const searchInput = modal.querySelector('.search-input');
 const clearSearchBtn = modal.querySelector('.close-button');
 const membersList = modal.querySelector('.members-list');
 
-// Show modal
+// Show modal and load initial data
 addMemberBtn.onclick = () => {
     modal.style.display = 'flex';
     loadProjectMembers();
     searchInput.value = '';
 };
 
-// Close modal
-closeBtn.onclick = () => {
-    modal.style.display = 'none';
+// Close modal handlers
+closeBtn.onclick = () => modal.style.display = 'none';
+window.onclick = (e) => {
+    if (e.target === modal) modal.style.display = 'none';
 };
 
-// Close modal when clicking outside
-window.onclick = (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-};
-
-// Clear search input
+// Clear search
 clearSearchBtn.onclick = () => {
     searchInput.value = '';
     loadProjectMembers();
 };
 
-// Function to create member item HTML
+// Create HTML for member items
 const createMemberItem = (member, isProjectMember = false) => {
-    const initials = member.username.split(' ')
-        .map(name => name[0])
-        .join('')
-        .toUpperCase();
-
+    const initials = member.username.slice(0, 2).toUpperCase();
+    const fullName = member.full_name || member.username;
+    
     return `
         <div class="member-item">
             <div class="member-avatar">
                 <span class="avatar-text">${initials}</span>
             </div>
             <div class="member-info">
-                <span class="member-name">${member.username}</span>
-                <span class="member-role">${isProjectMember ? member.role : ''}</span>
+                <span class="member-name">${fullName}</span>
+                ${member.email ? `<span class="member-email">${member.email}</span>` : ''}
+                <span class="member-role">${member.role || 'Member'}</span>
             </div>
             ${!isProjectMember ? `
-                <button class="add-user-btn" data-user-id="${member.id}">
+                <button class="add-user-btn" data-user-id="${member.id}" onclick="addMember(${member.id})">
                     Add
                 </button>
             ` : ''}
@@ -58,98 +51,140 @@ const createMemberItem = (member, isProjectMember = false) => {
 
 // Load project members
 const loadProjectMembers = async () => {
+    membersList.innerHTML = '<div class="loading">Loading members...</div>';
+    
     try {
-        const response = await fetch(`/api/projects/${projectId}/members/`);
-        const members = await response.json();
+        const response = await fetch(`/project/${projectId}/members/`);
+        if (!response.ok) throw new Error('Failed to load members');
         
+        const members = await response.json();
         let membersHTML = '<h4>Project Members</h4>';
-        members.forEach(member => {
-            membersHTML += createMemberItem(member, true);
-        });
+        
+        if (members.length === 0) {
+            membersHTML += '<div class="no-results">No members yet</div>';
+        } else {
+            members.forEach(member => {
+                // Ensure you are passing the correct member data
+                membersHTML += `
+                    <div class="member-item">
+                        <span class="member-name">${member.username.username}</span>
+                        <span class="member-role">${member.role}</span>
+                    </div>
+                `;
+            });
+        }
         
         membersList.innerHTML = membersHTML;
     } catch (error) {
-        console.error('Error loading project members:', error);
+        console.error('Error loading members:', error);
+        membersList.innerHTML = '<div class="error">Failed to load members. Please try again.</div>';
     }
 };
 
-// Search users
+
+// Search users with debouncing
 let searchTimeout;
 searchInput.addEventListener('input', (e) => {
     clearTimeout(searchTimeout);
     
+    const searchTerm = e.target.value.trim();
+    if (!searchTerm) {
+        loadProjectMembers();  // Assuming this function reloads all project members
+        return;
+    }
+    
     searchTimeout = setTimeout(async () => {
-        const searchTerm = e.target.value.trim();
+        membersList.innerHTML = '<div class="loading">Searching users...</div>';
         
-        if (searchTerm === '') {
-            loadProjectMembers();
-            return;
-        }
-
         try {
-            const response = await fetch(`/api/users/search/?q=${searchTerm}&project_id=${projectId}`);
-            const users = await response.json();
+            // Use searchTerm instead of searchQuery
+            const response = await fetch(`/projects/${projectId}/search-users/?q=${encodeURIComponent(searchTerm)}`);
+            if (!response.ok) throw new Error('Search failed');
             
-            let usersHTML = '<h4>Search Results</h4>';
+            const users = await response.json();
+            let resultsHTML = '<h4>Search Results</h4>';
+            
             if (users.length === 0) {
-                usersHTML += '<div class="no-results">No users found</div>';
+                resultsHTML += '<div class="no-results">No users found</div>';
             } else {
                 users.forEach(user => {
-                    usersHTML += createMemberItem(user);
+                    resultsHTML += createMemberItem(user, false);  // False because they are not yet members
                 });
             }
             
-            membersList.innerHTML = usersHTML;
-
-            // Add event listeners to Add buttons
-            const addButtons = membersList.querySelectorAll('.add-user-btn');
-            addButtons.forEach(button => {
-                button.addEventListener('click', async () => {
-                    const userId = button.dataset.userId;
-                    try {
-                        const response = await fetch(`/api/projects/${projectId}/members/`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': getCookie('csrftoken')
-                            },
-                            body: JSON.stringify({
-                                user_id: userId,
-                                role: 'MEMBER'
-                            })
-                        });
-
-                        if (response.ok) {
-                            // Refresh the members list
-                            loadProjectMembers();
-                            // Clear search
-                            searchInput.value = '';
-                        } else {
-                            throw new Error('Failed to add member');
-                        }
-                    } catch (error) {
-                        console.error('Error adding member:', error);
-                    }
-                });
-            });
+            membersList.innerHTML = resultsHTML;
         } catch (error) {
             console.error('Error searching users:', error);
+            membersList.innerHTML = '<div class="error">Search failed. Please try again.</div>';
         }
-    }, 300); // Debounce search for 300ms
+    }, 300); // debounce time
 });
 
-// Utility function to get CSRF token
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
+
+// Add member function
+const addMember = async (userId) => {
+    const button = event.target;
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Adding...';
+    
+    try {
+        const response = await fetch(`/project/${projectId}/add-member/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                role: 'MEMBER'
+            })
+        });
+
+        if (!response.ok) throw new Error('Failed to add member');
+
+        await response.json();
+        loadProjectMembers();
+        
+        // Clear search and show success message
+        searchInput.value = '';
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-message';
+        successDiv.textContent = 'Member added successfully';
+        membersList.insertAdjacentElement('afterbegin', successDiv);
+        setTimeout(() => successDiv.remove(), 3000);
+    } catch (error) {
+        console.error('Error adding member:', error);
+        button.textContent = 'Error';
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.disabled = false;
+        }, 2000);
     }
-    return cookieValue;
+};
+
+// Get CSRF token
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    if (addMemberBtn) {
+        // Only initialize if user has permission
+        const style = document.createElement('style');
+        style.textContent = `
+            .success-message {
+                background-color: #d4edda;
+                color: #155724;
+                padding: 10px;
+                border-radius: 4px;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+});

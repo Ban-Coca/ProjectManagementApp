@@ -6,11 +6,16 @@ from django.http import JsonResponse
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectMember
+from django.core.exceptions import ObjectDoesNotExist
+import logging
 import json
-
+import uuid
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 @login_required
 def projects_list(request):
@@ -105,112 +110,159 @@ def delete_project(request, pk):
         return JsonResponse({'message': 'Project deleted successfully.'}, status=204)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-"""""
-# New views for member management
-@login_required
-def get_project_members(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
-    
-    # Check if user has access to view members
-    if not (project.owner == request.user or 
-            ProjectMember.objects.filter(project=project, user=request.user).exists()):
-        return JsonResponse({"error": "Access denied"}, status=403)
-    
-    members = ProjectMember.objects.filter(project=project).select_related('user')
-    
-    members_data = [{
-        'id': member.user.id,
-        'username': member.user.username,
-        'role': member.role,
-        'email': member.user.email
-    } for member in members]
-    
-    # Add owner if not in members list
-    if not any(m['id'] == project.owner.id for m in members_data):
-        members_data.insert(0, {
-            'id': project.owner.id,
-            'username': project.owner.username,
-            'role': 'OWNER',
-            'email': project.owner.email
-        })
-    
-    return JsonResponse(members_data, safe=False)
-
 @login_required
 def search_users(request, project_id):
-    query = request.GET.get('q', '')
-    if not query:
-        return JsonResponse([], safe=False)
-        
-    project = get_object_or_404(Project, id=project_id)
-    
-    # Check if user has permission to add members
-    if project.owner != request.user:
-        return JsonResponse({"error": "Permission denied"}, status=403)
-    
-    # Get existing member IDs
-    existing_member_ids = ProjectMember.objects.filter(project=project).values_list('user_id', flat=True)
-    
-    # Search for users not in project
-    users = User.objects.exclude(
-        Q(id__in=existing_member_ids) | Q(id=project.owner.id)
-    ).filter(
-        Q(username__icontains=query) | Q(email__icontains=query)
-    )[:10]
-    
-    users_data = [{
-        'id': user.id,
-        'username': user.username,
-        'email': user.email
-    } for user in users]
-    
-    return JsonResponse(users_data, safe=False)
-
-@login_required
-def add_project_member(request, project_id):
-    if request.method != 'POST':
-        return JsonResponse({"error": "Method not allowed"}, status=405)
-        
-    project = get_object_or_404(Project, id=project_id)
-    
-    # Check if user has permission to add members
-    if project.owner != request.user:
-        return JsonResponse({"error": "Permission denied"}, status=403)
-    
     try:
-        data = json.loads(request.body)
-        user_id = data.get('user_id')
-        role = data.get('role', 'MEMBER')  # Default to MEMBER role
+        # Get the project, ensuring current user has access
+        project = get_object_or_404(Project, id=project_id)
         
-        if role not in [choice[0] for choice in ProjectMember.ROLE_CHOICES]:
-            return JsonResponse({"error": "Invalid role"}, status=400)
+        query = request.GET.get('q', '').strip()
         
-        user = User.objects.get(id=user_id)
+        # Get IDs of existing project members
+        existing_member_ids = ProjectMember.objects.filter(
+            project=project
+        ).values_list('user_id', flat=True)
         
-        # Check if user is already a member
-        if ProjectMember.objects.filter(project=project, user=user).exists():
-            return JsonResponse({"error": "User is already a member"}, status=400)
-            
-        member = ProjectMember.objects.create(
-            project=project,
-            user=user,
-            role=role
+        # Base queryset excluding existing members
+        users_queryset = User.objects.exclude(
+            user_id__in=existing_member_ids
         )
         
-        return JsonResponse({
-            'message': 'Member added successfully',
-            'member': {
-                'id': user.id,
-                'username': user.username,
-                'role': member.role,
-                'email': user.email
-            }
-        })
+        # Search if query provided
+        if query:
+            users = users_queryset.filter(
+                Q(username__icontains=query) |
+                Q(email__icontains=query) |
+                Q(first_name__icontains=query) |
+                Q(last_name__icontains=query)
+            ).distinct()[:10]
+        else:
+            users = users_queryset.none()
         
-    except User.DoesNotExist:
-        return JsonResponse({"error": "User not found"}, status=404)
-    except json.JSONDecodeError:
-        return JsonResponse({"error": "Invalid JSON data"}, status=400)
+        # Serialize user data
+        users_data = [{
+            'id': str(user.user_id),  # Use user_id instead of id
+            'username': user.username,
+            'email': user.email,
+            'full_name': f"{user.first_name} {user.last_name}".strip()
+        } for user in users]
+        
+        return JsonResponse(users_data, safe=False)
+    
+    except Exception as e:
+        logger.error(f"User search error: {e}", exc_info=True)
+        return JsonResponse({
+            "error": "Search failed", 
+            "details": str(e)
+        }, status=500)
+
+@login_required
+def get_project_members(request, project_id):
+    try:
+        project = get_object_or_404(Project, id=project_id)
+        
+        # Ensure current user has access to view members
+        if project.owner != request.user:
+            return JsonResponse({"error": "Permission denied"}, status=403)
+        
+        members = ProjectMember.objects.filter(project=project)
+        
+        members_data = [{
+            'id': str(member.user.user_id),
+            'username': member.user.username,
+            'email': member.user.email,
+            'role': member.role,
+            'full_name': f"{member.user.first_name} {member.user.last_name}".strip()
+        } for member in members]
+        
+        return JsonResponse(members_data, safe=False)
+    
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-"""
+
+@login_required
+@csrf_exempt
+def add_member_to_project(request, project_id):
+    if request.method == "POST":
+        try:
+            # Get the project
+            project = get_object_or_404(Project, id=project_id)
+
+            # Get the user_id from the request body (assuming it's JSON)
+            data = json.loads(request.body)
+            user_id = data.get('user_id')
+            
+            logger.info(f"Received user_id: {user_id}, type: {type(user_id)}")
+
+            try:
+                validated_uuid = uuid.UUID(str(user_id))
+                logger.info(f"Validated UUID: {validated_uuid}")
+            except (ValueError, TypeError) as e:
+                logger.error(f"UUID Validation Error: {e}")
+                return JsonResponse({"error": f"Invalid user ID format: {str(e)}"}, status=400)
+            
+            if not user_id:
+                return JsonResponse({"error": "User ID is required"}, status=400)
+
+            try:
+                # Retrieve the user by user_id (not id)
+                user = get_user_model().objects.get(user_id=user_id)
+            except get_user_model().DoesNotExist:
+                return JsonResponse({"error": "No User matches the given query."}, status=404)
+
+            # Check if the user is already a member of the project
+            if project.is_member(user):
+                return JsonResponse({"error": "User is already a member of this project."}, status=400)
+
+            # Add user as member
+            ProjectMember.objects.create(project=project, user=user, role="Member")
+
+            return JsonResponse({"message": "User added successfully"})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+
+@login_required
+@csrf_exempt
+def remove_member(request, project_id):
+    if request.method == 'DELETE':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+        
+        try:
+            # Retrieve the project and user
+            project = Project.objects.get(id=project_id)
+            user = User.objects.get(user_id=user_id)
+            
+            # Ensure the user is not the project owner
+            if user == project.owner:
+                return JsonResponse({'error': 'Cannot remove the project owner'}, status=400)
+            
+            # Find the ProjectMember instance and delete it
+            project_member = ProjectMember.objects.filter(project=project, user=user).first()
+            
+            if project_member:
+                project_member.delete()  # Remove the user from the project
+                return JsonResponse({'message': 'User removed successfully'}, status=200)
+            else:
+                return JsonResponse({'error': 'User not part of the project'}, status=404)
+        
+        except Project.DoesNotExist:
+            return JsonResponse({'error': 'Project not found'}, status=404)
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+    
+
+def is_owner(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+        is_owner = project.owner == request.user
+        return JsonResponse({'is_owner': is_owner, 'owner_id': project.owner.id})
+    except Project.DoesNotExist:
+        return JsonResponse({'error': 'Project not found'}, status=404)
