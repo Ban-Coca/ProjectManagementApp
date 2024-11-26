@@ -95,9 +95,9 @@ Thanks to these wonderful people:
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/Jeric1231"><img src="https://avatars.githubusercontent.com/u/153045584?v=4" width="100px;" alt=""/><br /><sub><b>John Eric Lumambas</b></sub></a></td>
-    <td align="center"><a href="https://github.com/manwaaa"><img src="https://avatars.githubusercontent.com/u/153294168?v=4" width="100px;" alt=""/><br /><sub><b>Manwarul Francis Santos</b></sub></a></td>
-    <td align="center"><a href="https://github.com/Ban-Coca"><img src="https://avatars.githubusercontent.com/u/180009268?v=4" width="100px;" alt=""/><br /><sub><b>Manwarul Francis Santos</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Jeric1231"><img src="https://avatars.githubusercontent.com/u/153045584?v=4" width="100px;" alt="" style="border-radius:50%;object-fit:cover;"/><br /><sub><b>John Eric Lumambas</b></sub></a></td>
+    <td align="center"><a href="https://github.com/manwaaa"><img src="https://avatars.githubusercontent.com/u/153294168?v=4" width="100px;" alt="" style="border-radius:50%;object-fit:cover;"/><br /><sub><b>Manwarul Francis Santos</b></sub></a></td>
+    <td align="center"><a href="https://github.com/Ban-Coca"><img src="https://avatars.githubusercontent.com/u/180009268?v=4" width="100px;" alt="" style="border-radius:50%;object-fit:cover;"/><br /><sub><b>Manwarul Francis Santos</b></sub></a></td>
     <!-- Add more contributors here -->
   </tr>
 </table>
