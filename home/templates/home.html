@@ -14,46 +14,89 @@
         {% block content %}
         <div class="main-content">
             <div class="header">
-                <h1>Welcome, {{ user.email }}!</h1>
+                <h1>Welcome back, {{ user.email }}!</h1>
+                <p>Here are your projects and tasks.</p>
             </div>
-            <div class="projects">
-                <h2>Your Projects</h2>
-                <hr class="underline">
-                <div class="project-cards">
-                    {% for project in projects %}
-                        <a href="{% url 'project_planning_and_scheduling:project_detail' project.id %}">
-                            <div class="project-card">
-                                <div data-project-id="{{ project.id }}">
-                                    <h3>{{ project.title }}</h3>
-                                    <p>{{ project.description }}</p><br>
-                                    <p>Deadline: {{ project.end_date|date:"m/d/Y" }}</p>
+            <div class="content">
+                <div class="projects">
+                    <h2>Your Projects</h2>
+                    <hr class="underline">
+                    <div class="project-cards">
+                        {% for project in projects %}
+                            <a href="{% url 'project_planning_and_scheduling:project_detail' project.id %}">
+                                <div class="project-card">
+                                    <div class="data-project" data-project-id="{{ project.id }}">
+                                        <div class="datas">
+                                            <h3>{{ project.title }}</h3>
+                                            <p>{{ project.description }}</p><br>
+                                        </div>
+                                        <p>Deadline: {{ project.end_date|date:"m/d/Y" }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        {% empty %}
+                        <div>No Assigned Project</div>
+                        {% endfor %}
+                    </div>
+                </div>  
+                <div class="tasks">
+                    <h2>Your Tasks</h2>
+                    <hr class="underline">
+                    {% for project, tasks in tasks_by_project.items %}
+                    <div class="project-section">
+                        <div class="project-title">
+                            <span class="toggle-arrow">&#9656;</span> <!-- Right-pointing arrow -->
+                            {{ project.title }}
+                        </div>
+                        <div class="task-list" style="display: none;">
+                            {% if tasks %}
+                                {% for task in tasks %}
+                                <div class="task-dropdown">
+                                    <div class="task-title">
+                                        {{ task.title }}
+                                    </div>
+                                    <div class="task-status {% if task.status == 'DONE' %}done{% elif task.status == 'INPROGRESS' %}in-progress{% endif %}">
+                                        {{ task.status }}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div>No tasks assigned.</div>
+                            {% endif %}
+                        </div>
+                    </div>
                     {% empty %}
-                    <div>No Assigned Project</div>
+                    <div>No tasks available.</div>
                     {% endfor %}
                 </div>
-            </div>  
-            <div class="tasks">
-                <h2>Your Tasks</h2>
-                <hr class="underline">
-                {% for task in tasks %}
-                    <div class="task">{{ task.title }} - {{ task.status }}</div>
-                {% empty %}
-                    <div>No tasks assigned.</div>
-                {% endfor %}
             </div>
+            {% endblock %}
         </div>
-        {% endblock %}
     </div>
     
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            const projectTitles = document.querySelectorAll(".project-title");
             const projectCards = document.querySelectorAll(".project-card");
+
             projectCards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.1}s`; // Set delay based on index
                 card.style.opacity = "1"; // Ensure opacity is set to 1 for visibility
+            });
+            
+            projectTitles.forEach((title) => {
+                title.addEventListener("click", () => {
+                    const taskList = title.nextElementSibling;
+                    const arrow = title.querySelector(".toggle-arrow");
+
+                    if (taskList.style.display === "none") {
+                        taskList.style.display = "block";
+                        arrow.style.transform = "rotate(90deg)"; // Downward arrow
+                    } else {
+                        taskList.style.display = "none";
+                        arrow.style.transform = "rotate(0deg)"; // Right-pointing arrow
+                    }
+                });
             });
         });
     </script>
