@@ -41,175 +41,141 @@
 <!-- JavaScript -->
 <script>
    document.addEventListener('DOMContentLoaded', function () {
-    const addMemberButton = document.getElementById('addMemberButton');
-    const addMemberModal = document.getElementById('addMemberModal');
-    const closeModalBtn = addMemberModal.querySelector('.close');
-    const searchInput = document.getElementById('search-input');
-    const membersList = document.getElementById('members-list');
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    let searchTimeout;
+        const addMemberButton = document.getElementById('addMemberButton');
+        const addMemberModal = document.getElementById('addMemberModal');
+        const closeModalBtn = addMemberModal.querySelector('.close');
+        const searchInput = document.getElementById('search-input');
+        const membersList = document.getElementById('members-list');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let searchTimeout;
 
-    const projectId = addMemberButton.getAttribute('data-project-id');
+        const projectId = addMemberButton.getAttribute('data-project-id');
 
-    const API_ENDPOINTS = {
-        members: `/projects/${projectId}/members/`,
-        addMember: `/projects/${projectId}/add-member/`,
-        searchUsers: (query) => `/projects/${projectId}/search-users/?q=${encodeURIComponent(query)}`
-    };
+        const API_ENDPOINTS = {
+            members: `/projects/${projectId}/members/`,
+            addMember: `/projects/${projectId}/add-member/`,
+            searchUsers: (query) => `/projects/${projectId}/search-users/?q=${encodeURIComponent(query)}`
+        };
 
-    function openModal() {
-        addMemberModal.style.display = 'flex';
-        addMemberModal.setAttribute('aria-hidden', 'false');
-        loadProjectMembers();  // Load members when the modal opens
-    }
-
-    function closeModal() {
-        addMemberModal.style.display = 'none';
-        addMemberModal.setAttribute('aria-hidden', 'true');
-        searchInput.value = '';
-        membersList.innerHTML = '';
-        location.reload();  // Refresh the page when the modal is closed
-    }
-
-    addMemberButton.addEventListener('click', openModal);
-    closeModalBtn.addEventListener('click', closeModal);
-
-    window.addEventListener('click', function (event) {
-        if (event.target === addMemberModal) closeModal();
-    });
-
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-
-        const searchTerm = e.target.value.trim();
-        if (!searchTerm) {
-            loadProjectMembers();
-            return;
+        function openModal() {
+            addMemberModal.style.display = 'flex';
+            addMemberModal.setAttribute('aria-hidden', 'false');
+            loadProjectMembers();  // Load members when the modal opens
         }
 
-        searchTimeout = setTimeout(async () => {
-            membersList.innerHTML = '<div class="loading">Searching users...</div>';
-            try {
-                const response = await fetch(API_ENDPOINTS.searchUsers(searchTerm));
-                if (!response.ok) throw new Error('Search failed');
-                const users = await response.json();
+        function closeModal() {
+            addMemberModal.style.display = 'none';
+            addMemberModal.setAttribute('aria-hidden', 'true');
+            searchInput.value = '';
+            membersList.innerHTML = '';
+            location.reload();  // Refresh the page when the modal is closed
+        }
 
-                let resultsHTML = '<h4>Search Results</h4>';
-                if (users.length === 0) {
-                    resultsHTML += '<div class="no-results">No users found</div>';
+        addMemberButton.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('click', function (event) {
+            if (event.target === addMemberModal) closeModal();
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+
+            const searchTerm = e.target.value.trim();
+            if (!searchTerm) {
+                loadProjectMembers();
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                membersList.innerHTML = '<div class="loading">Searching users...</div>';
+                try {
+                    const response = await fetch(API_ENDPOINTS.searchUsers(searchTerm));
+                    if (!response.ok) throw new Error('Search failed');
+                    const users = await response.json();
+
+                    let resultsHTML = '<h4>Search Results</h4>';
+                    if (users.length === 0) {
+                        resultsHTML += '<div class="no-results">No users found</div>';
+                    } else {
+                        users.forEach(user => {
+                            resultsHTML += `
+                                <div class="member-item">
+                                    <div class="member-avatar">
+                                        <span class="avatar-text">${user.username.slice(0, 2).toUpperCase()}</span>
+                                    </div>
+                                    <div class="member-info">
+                                        <span class="member-name">${user.username}</span>
+                                        {% if user.role %}
+                                        <span class="member-role">{{ user.role }}</span>
+                                        {% else %}
+                                        <span class="member-role"></span>
+                                        {% endif %}
+                                    </div>
+                                    <button class="add-user-btn" aria-label="Add user" data-user-id="${user.id}">Add</button>
+                                </div>
+                            `;
+                        });
+                    }
+                    membersList.innerHTML = resultsHTML;
+                } catch (error) {
+                    console.error('Error searching users:', error);
+                    membersList.innerHTML = '<div class="error">Search failed. Please try again.</div>';
+                }
+            }, 300);
+        });
+
+        async function loadProjectMembers() {
+            membersList.innerHTML = '<div class="loading">Loading members...</div>';
+            try {
+                const response = await fetch(API_ENDPOINTS.members);
+                if (!response.ok) throw new Error('Failed to load members');
+                const members = await response.json();
+
+                let membersHTML = '<h4>Project Members</h4>';
+                if (members.length === 0) {
+                    membersHTML += '<div class="no-results">No members yet</div>';
                 } else {
-                    users.forEach(user => {
-                        resultsHTML += `
+                    members.forEach(member => {
+                        membersHTML += `
                             <div class="member-item">
                                 <div class="member-avatar">
-                                    <span class="avatar-text">${user.username.slice(0, 2).toUpperCase()}</span>
+                                    <span class="avatar-text">${member.username.slice(0, 2).toUpperCase()}</span>
                                 </div>
                                 <div class="member-info">
-                                    <span class="member-name">${user.username}</span>
-                                    <span class="member-role">${user.role}</span>
+                                    <span class="member-name">${member.username}</span>
+                                    <span class="member-role">${member.role}</span>
                                 </div>
-                                <button class="add-user-btn" aria-label="Add user" data-user-id="${user.id}">Add</button>
+                                <button class="remove-user-btn" data-user-id="${member.id}" aria-label="Remove user">Remove</button>
                             </div>
                         `;
                     });
                 }
-                membersList.innerHTML = resultsHTML;
+                membersList.innerHTML = membersHTML;
             } catch (error) {
-                console.error('Error searching users:', error);
-                membersList.innerHTML = '<div class="error">Search failed. Please try again.</div>';
+                console.error('Error loading members:', error);
+                membersList.innerHTML = '<div class="error">Failed to load members. Please try again.</div>';
             }
-        }, 300);
-    });
-
-    async function loadProjectMembers() {
-        membersList.innerHTML = '<div class="loading">Loading members...</div>';
-        try {
-            const response = await fetch(API_ENDPOINTS.members);
-            if (!response.ok) throw new Error('Failed to load members');
-            const members = await response.json();
-
-            let membersHTML = '<h4>Project Members</h4>';
-            if (members.length === 0) {
-                membersHTML += '<div class="no-results">No members yet</div>';
-            } else {
-                members.forEach(member => {
-                    membersHTML += `
-                        <div class="member-item">
-                            <div class="member-avatar">
-                                <span class="avatar-text">${member.username.slice(0, 2).toUpperCase()}</span>
-                            </div>
-                            <div class="member-info">
-                                <span class="member-name">${member.username}</span>
-                                <span class="member-role">${member.role}</span>
-                            </div>
-                            <button class="remove-user-btn" data-user-id="${member.id}" aria-label="Remove user">Remove</button>
-                        </div>
-                    `;
-                });
-            }
-            membersList.innerHTML = membersHTML;
-        } catch (error) {
-            console.error('Error loading members:', error);
-            membersList.innerHTML = '<div class="error">Failed to load members. Please try again.</div>';
-        }
-    }
-
-    // Event listener for the "Add user" button
-    membersList.addEventListener('click', (e) => {
-        if (e.target.classList.contains('add-user-btn')) {
-            const userId = e.target.getAttribute('data-user-id');
-            const button = e.target;
-
-            button.textContent = 'Adding...';
-            button.disabled = true;
-
-            // Fetch request to add the user to the project
-            fetch(API_ENDPOINTS.addMember, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken,
-                },
-                body: JSON.stringify({
-                    user_id: userId,  // Ensure this ID corresponds to an existing user
-                }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text); });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('User added:', data);
-                loadProjectMembers();  // Refresh members after adding the user
-            })
-            .catch(error => {
-                console.error('Error adding user:', error);
-                button.textContent = 'Add';
-                button.disabled = false;
-            });
         }
 
-        // Confirming user removal
-        if (e.target.classList.contains('remove-user-btn')) {
-            const userId = e.target.getAttribute('data-user-id');
-            const removeMemberModal = document.getElementById('removeMemberModal');
-            const removeConfirmBtn = document.getElementById('removeConfirmBtn');
-            const removeCancelBtn = document.getElementById('removeCancelBtn');
+        // Event listener for the "Add user" button
+        membersList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-user-btn')) {
+                const userId = e.target.getAttribute('data-user-id');
+                const button = e.target;
 
-            removeMemberModal.style.display = 'flex';
-            removeMemberModal.setAttribute('aria-hidden', 'false');
+                button.textContent = 'Adding...';
+                button.disabled = true;
 
-            removeConfirmBtn.addEventListener('click', () => {
-                fetch(`/projects/${projectId}/remove-member/`, {
-                    method: 'DELETE',  // Corrected to DELETE for removing members
+                // Fetch request to add the user to the project
+                fetch(API_ENDPOINTS.addMember, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': csrfToken,
                     },
                     body: JSON.stringify({
-                        user_id: userId, // Ensure this ID corresponds to the member to be removed
+                        user_id: userId,  // Ensure this ID corresponds to an existing user
                     }),
                 })
                 .then(response => {
@@ -219,21 +185,59 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log('User removed:', data);
-                    loadProjectMembers(); // Refresh the member list after removal
-                    removeMemberModal.style.display = 'none'; // Close confirmation modal
+                    console.log('User added:', data);
+                    loadProjectMembers();  // Refresh members after adding the user
                 })
                 .catch(error => {
-                    console.error('Error removing user:', error);
+                    console.error('Error adding user:', error);
+                    button.textContent = 'Add';
+                    button.disabled = false;
                 });
-            });
+            }
 
-            removeCancelBtn.addEventListener('click', () => {
-                removeMemberModal.style.display = 'none'; // Close confirmation modal
-            });
-        }
+            // Confirming user removal
+            if (e.target.classList.contains('remove-user-btn')) {
+                const userId = e.target.getAttribute('data-user-id');
+                const removeMemberModal = document.getElementById('removeMemberModal');
+                const removeConfirmBtn = document.getElementById('removeConfirmBtn');
+                const removeCancelBtn = document.getElementById('removeCancelBtn');
+
+                removeMemberModal.style.display = 'flex';
+                removeMemberModal.setAttribute('aria-hidden', 'false');
+
+                removeConfirmBtn.addEventListener('click', () => {
+                    fetch(`/projects/${projectId}/remove-member/`, {
+                        method: 'DELETE',  // Corrected to DELETE for removing members
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: JSON.stringify({
+                            user_id: userId, // Ensure this ID corresponds to the member to be removed
+                        }),
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('User removed:', data);
+                        loadProjectMembers(); // Refresh the member list after removal
+                        removeMemberModal.style.display = 'none'; // Close confirmation modal
+                    })
+                    .catch(error => {
+                        console.error('Error removing user:', error);
+                    });
+                });
+
+                removeCancelBtn.addEventListener('click', () => {
+                    removeMemberModal.style.display = 'none'; // Close confirmation modal
+                });
+            }
+        });
     });
-});
 </script>
 
 <style>
@@ -355,6 +359,9 @@
     }
 
     .member-info {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
         flex: 1;
     }
 
@@ -369,7 +376,7 @@
         display: block;
         font-size: 12px;
         color: #666;
-        margin-top: 2px;
+        
     }
 
     .add-user-btn {

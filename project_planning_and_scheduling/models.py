@@ -7,7 +7,6 @@ class Project(models.Model):
         ("INPROGRESS", "In Progress"),
         ("DONE", "Done")
     ]
-    
     title = models.CharField(max_length=100)
     description = models.TextField()
     start_date = models.DateField()

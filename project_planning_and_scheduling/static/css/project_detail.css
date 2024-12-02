@@ -98,7 +98,25 @@ html, body {
     padding: 5px 10px;
     border-radius: 15px;
 }
+.members-list {
+    gap: 10px; /* Add space between members */
+}
 
+.project-members .member-item {
+    background-color: #d0d0d0; /* Background color for member items */
+    padding: 10px; /* Padding for member items */
+    border-radius: 5px; /* Rounded corners for member items */
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+}
+
+.member-name {
+    font-weight: bold;
+    color: #333;
+}
 .tasks {
     margin-left: 20px;
     margin-top: 20px;

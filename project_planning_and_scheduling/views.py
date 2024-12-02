@@ -110,6 +110,23 @@ def delete_project(request, pk):
         return JsonResponse({'message': 'Project deleted successfully.'}, status=204)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+# View to update the project
+@login_required
+def update_project(request, pk):
+    project = get_object_or_404(Project, id=pk)
+
+    if request.method == 'POST':
+        # Update the project with the form data
+        project.title = request.POST['title']
+        project.description = request.POST['description']
+        project.status = request.POST['status']
+        project.end_date = request.POST['end_date']
+        project.save()
+
+        return redirect('project_planning_and_scheduling:project_detail', id=project.id)
+
+    return render(request, 'project_page/updateprojectmodal.html', {'project': project})
+
 @login_required
 def search_users(request, project_id):
     try:

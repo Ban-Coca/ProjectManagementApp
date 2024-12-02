@@ -31,8 +31,20 @@
                                                 <p>Deadline: {{ project.end_date }}</p>
                                             </div>
                                             <div class="right-list">
-                                                <h3>Status: {{ project.status }}</h3>
+                                                <h3>Status: </h3>
+                                                <h3 class="status-text" 
+                                                    {% if project.status == 'To Do' %}
+                                                        style="color: grey;"
+                                                    {% elif project.status == 'In Progress' %}
+                                                        style="color: blue;"
+                                                    {% elif project.status == 'Done' %}
+                                                        style="color: green;"
+                                                    {% endif %}
+                                                >
+                                                    {{ project.status }}
+                                                </h3>
                                             </div>
+                                            
                                         </div>
                                     </a>
                                     <div class="more-options">
@@ -40,6 +52,7 @@
                                         <div class="options-dropdown">
                                             <ul>
                                                 <li><a class="delete-project" href="#">Delete</a></li>
+                                                <li><a class="update-project" href="#">Update</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -58,6 +71,8 @@
 
         <!-- Include the Delete Confirmation Modal -->
         {% include 'project_page/deleteprojectmodal.html' %}
+
+        {% include 'project_page/updateprojectmodal.html' %}
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", () => {

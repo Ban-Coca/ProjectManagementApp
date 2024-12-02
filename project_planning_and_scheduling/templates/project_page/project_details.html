@@ -20,7 +20,7 @@
             <div class="project-nav">
                 <div class="nav-button">
                     <button class="tab-link active" data-tab="overview">Overview</button>
-                    <button class="tab-link" data-tab="task_table">Tasks</button>
+                    <button class="tab-link" data-project-id="{{ project.id }}" data-tab="task_table">Tasks</button>
                     <button class="tab-link" data-tab="board">Board</button>
                     <button class="tab-link" data-tab="calendarTab">Calendar</button>
                     <button class="tab-link" data-tab="documents">Documents</button>
@@ -60,7 +60,7 @@
                 <div class="tasks">
                     <h3>Tasks</h3>
                     <ul>
-                        {% for task in project.task_set.all %}
+                        {% for task in project.task.all %}
                             <li>{{ task.title }} - {{ task.status }}</li>
                         {% endfor %}
                     </ul>
