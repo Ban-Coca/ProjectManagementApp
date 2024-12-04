@@ -5,6 +5,7 @@ body {
     background-color: #f0f0f0;
 }
 .container {
+    height: 92.5%;
     background-color: #D9D9D9;
     border-radius: 8px;
     padding: 20px;
@@ -91,7 +92,7 @@ td:hover {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
     background-color: rgba(0,0,0,0.4);
 }
 
@@ -103,6 +104,7 @@ td:hover {
     width: 80%;
     max-width: 500px;
     border-radius: 8px;
+    transform: translate(0%, -25%);
 }
 .close {
     color: #aaa;
@@ -586,4 +588,87 @@ input[type="date"]:focus,
 .modal-footer {
     padding-top: 15px;
     text-align: right;
+}
+
+.user-search-container {
+    position: relative;
+}
+
+.dropdown-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background: #fff;
+    width: 100%; /* Ensure it matches the width of the input */
+    z-index: 1000;
+}
+.dropdown-box{
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s;
+}
+
+.dropdown-menu .no-results,
+.dropdown-menu .loading,
+.dropdown-menu .error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Fills the dropdown */
+    color: #666;
+    text-align: center;
+    padding: 10px; /* Ensure padding is balanced */
+}
+
+.dropdown-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+.member-avatar {
+    width: 36px;
+    height: 36px;
+    background: #6b6b6b;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.avatar-text {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.member-info {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    flex: 1;
+}
+
+.member-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.member-role {
+    display: block;
+    font-size: 12px;
+    color: #666;
+    
 }

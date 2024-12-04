@@ -15,6 +15,12 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+def redirect_view(request):
+    if request.user.is_authenticated:
+        return redirect('home:home')  # Redirect to the home page if logged in
+    else:
+        return redirect('auth:login')  # Redirect to the login page if not logged in
+    
 # Your existing views remain unchanged
 def login_view(request):
     if request.method == 'POST':

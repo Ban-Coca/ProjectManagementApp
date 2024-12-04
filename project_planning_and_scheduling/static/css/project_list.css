@@ -150,64 +150,7 @@ button:hover {
     background-color: #b0a8a8;
 }
 
-.more-options label {
-    font-weight: bold;
-}
-
 .project-card {
     position: relative;
     padding: 20px;
-}
-
-.more-options {
-    position: fixed;
-    top:35px;
-    right: 30px;
-}
-
-.more-options-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: #333;
-}
-
-.options-dropdown {
-    display: none;
-    position: absolute;
-    top: 40px;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 100;
-}
-
-.more-options:hover .options-dropdown {
-    display: block;
-}
-
-.options-dropdown ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.options-dropdown li {
-    padding: 18px;
-}
-
-.options-dropdown li:hover {
-    background-color: #f0f0f0;
-    cursor: pointer;
-}
-
-.options-dropdown li a {
-    text-decoration: none;
-    color: #333;
-}
-
-.options-dropdown li:hover a {
-    color: #b49595;
 }

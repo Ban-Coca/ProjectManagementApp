@@ -19,7 +19,8 @@ class KanbanBoard {
 
     async loadTasks() {
         try {
-            const response = await fetch('/tasks/task_list/');
+            const projectId = this.getProjectIdFromUrl();
+            const response = await fetch(`/tasks/task_list/${projectId}/`);
             const data = await response.json();
             console.log(data);
             // Reset columns

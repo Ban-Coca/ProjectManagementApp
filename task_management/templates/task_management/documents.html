@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/documents.css' %}">
+</head>
+<body>
+    <div class="documents_container">
+        <form id="uploadForm" class="top-controls" action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="choose-file">
+                <label for="fileInput">Choose File</label>
+                <input type="file" id="fileInput" name="file" required>
+                <span id="fileName">No file chosen</span>
+            </div>
+            <div class="search-container">
+                <input type="text" id="fileSearch" class="search-input" placeholder="Search..." onkeyup="searchFiles()">
+            </div>
+            <button type="submit" class="upload-button">Upload</button>
+        </form>
+        <div id="uploadedFiles">
+            <h3>Uploaded Files</h3>
+            {% for file in files %}
+            <div class="file-item" onclick="viewFile('{{ file.name }}')">
+                {{ file.name }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Modal structure -->
+    <div id="fileViewerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeFileViewer()">&times;</span>
+            <div id="fileContent" style="width: 100%; height: calc(100% - 40px); display: flex; justify-content: center; align-items: center;">
+                <!-- Content will be inserted here -->
+            </div>
+        </div>
+    </div>
+    <script>
+        // Update file name display
+        document.getElementById('fileInput').addEventListener('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+            document.getElementById('fileName').textContent = fileName;
+        });
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.fileName) {
+                    // Add new file below the "Uploaded Files" title
+                    const filesList = document.getElementById('uploadedFiles');
+                    const newFile = document.createElement('div');
+                    newFile.className = 'file-item';
+                    newFile.textContent = data.fileName;
+                    newFile.onclick = () => viewFile(data.fileName);
+                    filesList.appendChild(newFile);
+                    
+                    // Reset form
+                    this.reset();
+                    document.getElementById('fileName').textContent = 'No file chosen';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Upload failed. Please try again.');
+            });
+        });
+        function searchFiles() {
+            const searchInput = document.getElementById('fileSearch');
+            const filter = searchInput.value.toLowerCase();
+            const fileItems = document.getElementsByClassName('file-item');
+            Array.from(fileItems).forEach(item => {
+                const fileName = item.textContent || item.innerText;
+                if (fileName.toLowerCase().indexOf(filter) > -1) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+        function viewFile(fileName) {
+            const fileUrl = "{% url 'view_file' 'FILENAME' %}".replace('FILENAME', fileName);
+            const fileContent = document.getElementById('fileContent');
+            const modal = document.getElementById('fileViewerModal');
+            
+            fileContent.innerHTML = '';
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExtension)) {
+                const img = document.createElement('img');
+                img.src = fileUrl;
+                img.style.maxWidth = '80%';
+                img.style.maxHeight = '80%';
+                img.style.objectFit = 'contain';
+                fileContent.appendChild(img);
+            } else if (fileExtension === 'pdf') {
+                const embed = document.createElement('embed');
+                embed.src = fileUrl;
+                embed.type = 'application/pdf';
+                embed.style.width = '100%';
+                embed.style.height = '100%';
+                fileContent.appendChild(embed);
+            } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileExtension)) {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(window.location.origin + fileUrl)}`;
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                iframe.frameBorder = '0';
+                fileContent.appendChild(iframe);
+            } else {
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.textContent = `Download ${fileName}`;
+                fileContent.appendChild(link);
+            }
+            modal.style.display = 'block';
+        }
+        function closeFileViewer() {
+            const modal = document.getElementById('fileViewerModal');
+            modal.style.display = 'none';
+        }
+        window.onclick = function(event) {
+            const modal = document.getElementById('fileViewerModal');
+            if (event.target == modal) {
+                closeFileViewer();
+            }
+        };
+    </script>
+</body>
+</html>

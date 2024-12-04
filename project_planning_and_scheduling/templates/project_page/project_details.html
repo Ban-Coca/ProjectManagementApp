@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +7,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
     <script src="{% static 'js/project_detail.js' %}" defer></script>
+    <script src="{% static 'js/project_options.js' %}" defer></script>
 </head>
 <body>
 {% block content %}
@@ -16,7 +16,18 @@
     <div class="under">
         {% include 'components/sidebar.html' %}
         <div class="main-content">
-            <h1>{{ project.title }}</h1>
+            <div class="header">
+                <h1>{{ project.title }}</h1>
+                <div class="more-options">
+                    <button class="more-options-btn" aria-label="More options">&#8230;</button>
+                    <div class="options-dropdown">
+                        <ul>
+                            <li><a class="delete-project" data-project-id="{{ project.id }}" href="#">Delete</a></li>
+                            <li><a class="update-project" data-project-id="{{ project.id }}" href="#">Update</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
             <div class="project-nav">
                 <div class="nav-button">
                     <button class="tab-link active" data-tab="overview">Overview</button>
@@ -27,43 +38,54 @@
                 </div>
             </div>
             <div id="overview" class="tab_content active">
-                <div class="project-description">
-                    <h2>Project Description</h2>
-                    <p>{{ project.description }}</p>
-                </div>
-                <div class="project-details">
-                    <div class="deadline">
-                        <h3>Deadline</h3>
-                        <p>{{ project.end_date }}</p>
-                    </div>
-                    <div class="project-members">
-                        <div class="member-header">
-                            <h3>Members</h3>
-                            {% if is_owner %}
-                            <button id="addMemberButton" data-project-id="{{ project.id }}" class="add-member-btn">
-                                <span class="plus-icon">+</span>
-                            </button>
-                            {% endif %}
+                <div class="project">
+                    <div>
+                        <div class="project-description">
+                            <h2>Project Description</h2>
+                            <p>{{ project.description }}</p>
                         </div>
-                        <div class="members-list">
-                            <!-- Project Members -->
-                            {% for member in members %}
-                            <div class="member-item">
-                                <div class="member-info">
-                                    <span class="member-name">{{ member.user.username }}</span>
+                        <div class="project-details">
+                            <div class="project-members">
+                                <div class="member-header">
+                                    <h3>Members</h3>
+                                    {% if is_owner %}
+                                    <button id="addMemberButton" data-project-id="{{ project.id }}" class="add-member-btn">
+                                        <span class="plus-icon">+</span>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                <div class="members-list">
+                                    <!-- Project Members -->
+                                    {% for member in members %}
+                                    <div class="member-item">
+                                        <div class="member-info">
+                                            <span class="member-name">{{ member.user.username }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="deadline">
+                                <h3>Deadline</h3>
+                                <p>{{ project.end_date }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tasks">
+                        <h2>Tasks</h2>
+                        <ul>
+                            {% for task in tasks %}
+                            <div class="task-info">
+                                <div class="task-title">
+                                    {{ task.title }}
+                                </div>
+                                <div class="task-status {% if task.status == 'DONE' %}done{% elif task.status == 'INPROGRESS' %}in-progress{% endif %}">
+                                    {{ task.status }}
                                 </div>
                             </div>
                             {% endfor %}
-                        </div>
+                        </ul>
                     </div>
-                </div>
-                <div class="tasks">
-                    <h3>Tasks</h3>
-                    <ul>
-                        {% for task in project.task.all %}
-                            <li>{{ task.title }} - {{ task.status }}</li>
-                        {% endfor %}
-                    </ul>
                 </div>
             </div>
 
@@ -75,13 +97,22 @@
                 {% include 'task_management/kanban_board.html' %}
             </div>
             <div id="calendarTab" class="tab_content">
-                <div id='calendar'>{% include 'task_management/calendar.html' %}</div>
+                <!-- <div id='calendar'>{% include 'task_management/calendar.html' %}</div> -->
+            </div>
+            <div id="documents" class="tab_content">
+                {% include 'task_management/documents.html' %}
             </div>
         </div>
 
         <!-- Include the Create Project Modal -->
         {% include 'project_page/addmembermodal.html' %}
     </div>
+
+    <!-- Delete Project Modal -->
+    {% include 'project_page/deleteprojectmodal.html' %}
+
+    <!-- Update Project Modal -->
+    {% include 'project_page/updateprojectmodal.html' %}
 {% endblock %}
 </body>
 </html>

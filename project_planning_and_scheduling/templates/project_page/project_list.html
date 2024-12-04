@@ -47,15 +47,6 @@
                                             
                                         </div>
                                     </a>
-                                    <div class="more-options">
-                                        <button class="more-options-btn" aria-label="More options">&#8230;</button>
-                                        <div class="options-dropdown">
-                                            <ul>
-                                                <li><a class="delete-project" href="#">Delete</a></li>
-                                                <li><a class="update-project" href="#">Update</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -68,11 +59,6 @@
 
         <!-- Include the Create Project Modal -->
         {% include 'project_page/createprojectmodal.html' %}
-
-        <!-- Include the Delete Confirmation Modal -->
-        {% include 'project_page/deleteprojectmodal.html' %}
-
-        {% include 'project_page/updateprojectmodal.html' %}
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", () => {

@@ -7,7 +7,7 @@
         </div>
         <div class="member-invite-container">
             <div class="search-member">
-                <input type="text" id="search-input" placeholder="Search users to add..." class="search-input">
+                <input type="text" id="search-input" placeholder="Search users to add..." class="search-input" autocomplete="off">
                 <button class="close-button" aria-label="Clear search">×</button>
             </div>
 
@@ -78,6 +78,13 @@
             if (event.target === addMemberModal) closeModal();
         });
 
+        // Clear search input when clicking the close button (X)
+        const closeButton = document.querySelector('.close-button');
+        closeButton.addEventListener('click', () => {
+            searchInput.value = '';  // Clear the search input
+            loadProjectMembers();  // Reload project members
+        });
+        
         searchInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
 

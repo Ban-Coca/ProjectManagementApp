@@ -5,8 +5,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const deleteProjectModal = document.getElementById('deleteProjectModal');
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const cancelUpdateBtn = document.getElementById('cancelUpdateBtn');
     const updateProjectModal = document.getElementById('updateProjectModal'); // Update modal
     const updateProjectForm = document.getElementById('updateProjectForm'); // Update form
+    const closeIcon = document.getElementById("closeIcon");
     let selectedProjectId = null; // Store the project ID to delete or update
 
     // Handle delete project action via more-options dropdown
@@ -14,8 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
         button.addEventListener('click', function(event) {
             event.preventDefault(); // Prevent default anchor behavior
 
-            const projectCard = this.closest('.project-card'); // Find the closest project card
-            selectedProjectId = projectCard.querySelector('[data-project-id]').getAttribute('data-project-id'); // Extract project ID
+            selectedProjectId = this.getAttribute('data-project-id'); // Extract project ID
 
             if (!selectedProjectId) {
                 console.error('Project ID not found!');
@@ -28,22 +29,22 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Handle update project action via more-options dropdown
-document.querySelectorAll('.update-project').forEach(button => {
-    button.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent default anchor behavior
+    document.querySelectorAll('.update-project').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default anchor behavior
 
-        const projectCard = this.closest('.project-card'); // Find the closest project card
-        selectedProjectId = projectCard.querySelector('[data-project-id]').getAttribute('data-project-id'); // Extract project ID
+            selectedProjectId = this.getAttribute('data-project-id'); // Extract project ID
 
-        if (!selectedProjectId) {
-            console.error('Project ID not found!');
-            return; // Exit if project ID is not found
-        }
+            if (!selectedProjectId) {
+                console.error('Project ID not found!');
+                return; // Exit if project ID is not found
+            }
 
-        // Open the update modal and populate the form with the project's current details
-        openUpdateModal(projectCard);
+            // Open the update modal and populate the form with the project's current details
+            openUpdateModal(selectedProjectId);
+        });
     });
-});
+
     // Confirm delete button in modal
     confirmDeleteBtn.addEventListener('click', function() {
         if (!selectedProjectId) return; // No project selected
@@ -59,7 +60,7 @@ document.querySelectorAll('.update-project').forEach(button => {
         .then(response => {
             if (response.ok) {
                 console.log('Project deleted successfully.');
-                location.reload(); // Refresh the page or remove the card from the DOM dynamically
+                window.location.href = '/projects/'; // Redirect to the projects list page
             } else {
                 throw new Error('Network response was not ok.');
             }
@@ -74,6 +75,27 @@ document.querySelectorAll('.update-project').forEach(button => {
 
     // Cancel delete button in modal
     cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+    closeIcon.addEventListener('click',closeDeleteModal);
+
+    // Function to close delete modal if outside click
+    function outsideClickDelete(event) {
+        if (event.target == deleteProjectModal) {
+            closeDeleteModal();
+        }
+    }
+
+    // Add event listener for outside click on delete modal
+    window.addEventListener("click", outsideClickDelete);
+    cancelUpdateBtn.addEventListener('click',closeUpdateModal);
+    // Function to close update modal if outside click
+    function outsideClickUpdate(event) {
+        if (event.target == updateProjectModal) {
+            closeUpdateModal();
+        }
+    }
+
+    // Add event listener for outside click on update modal
+    window.addEventListener("click", outsideClickUpdate);
 
     // Submit update form in modal
     updateProjectForm.addEventListener('submit', function(event) {
@@ -121,16 +143,27 @@ document.querySelectorAll('.update-project').forEach(button => {
     }
 
     // Function to open update modal and populate the form
-    function openUpdateModal(projectCard) {
-        const title = projectCard.querySelector('h3').textContent;
-        const deadline = projectCard.querySelector('.project-info p').textContent.replace('Deadline: ', '');
-        
-        // Set values in the update form
-        updateProjectForm.querySelector('[name="title"]').value = title;
-        updateProjectForm.querySelector('[name="end_date"]').value = deadline;
+    function openUpdateModal(projectId) {
+        // Fetch project details from the server
+        fetch(`/projects/update/${projectId}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.status);
+                // Set values in the update form
+                updateProjectForm.querySelector('[name="title"]').value = data.title;
+                updateProjectForm.querySelector('[name="end_date"]').value = data.end_date;
+                updateProjectForm.querySelector('[name="description"]').value = data.description;
 
-        // Open the update modal
-        updateProjectModal.style.display = 'block';
+                // Set the correct status in the dropdown
+                const statusSelect = updateProjectForm.querySelector('[name="status"]');
+                statusSelect.value = data.status;
+
+                // Open the update modal
+                updateProjectModal.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error fetching project details:', error);
+            });
     }
 
     // Function to close update modal

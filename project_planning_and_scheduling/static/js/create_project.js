@@ -14,6 +14,8 @@ modalBtn.addEventListener("click", openModal);
 closeBtn.addEventListener("click", closeModal);
 // Listen for cancel button
 cancelBtn.addEventListener("click", closeModal);
+// Listen for clicks outside the modal to close it
+window.addEventListener("click", outsideClick);
 
 // Function to open modal
 function openModal() {
@@ -27,6 +29,13 @@ function closeModal() {
     modal.style.display = "none";
     // Change the URL back to the projects list page without reloading the page
     history.pushState(null, null, '/projects/');
+}
+
+// Function to close modal if outside click
+function outsideClick(event) {
+    if (event.target == modal) {
+        closeModal();
+    }
 }
 
 // Validate project title (no special characters allowed)

@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectMember
 from django.core.exceptions import ObjectDoesNotExist
+from task_management.models import Tasks
 import logging
 import json
 import uuid
@@ -81,6 +82,7 @@ def create_project(request):
 def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk)
     
+    tasks = Tasks.objects.filter(project=pk)
     # Check if user has access to this project
     if not (project.owner == request.user or 
             ProjectMember.objects.filter(project=project, user=request.user).exists()):
@@ -93,6 +95,7 @@ def project_detail(request, pk):
         'project': project,
         'members': members,
         'is_owner': project.owner == request.user,
+        'tasks': tasks
     }
     
     return render(request, 'project_page/project_details.html', context)
@@ -110,22 +113,33 @@ def delete_project(request, pk):
         return JsonResponse({'message': 'Project deleted successfully.'}, status=204)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-# View to update the project
 @login_required
 def update_project(request, pk):
     project = get_object_or_404(Project, id=pk)
 
-    if request.method == 'POST':
-        # Update the project with the form data
-        project.title = request.POST['title']
-        project.description = request.POST['description']
-        project.status = request.POST['status']
-        project.end_date = request.POST['end_date']
-        project.save()
+    if request.method == 'GET':
+        # Return project details as JSON
+        project_data = {
+            'title': project.title,
+            'description': project.description,
+            'status': project.status,
+            'end_date': project.end_date.strftime('%Y-%m-%d')
+        }
+        return JsonResponse(project_data)
 
-        return redirect('project_planning_and_scheduling:project_detail', id=project.id)
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            project.title = data.get('title', project.title)
+            project.description = data.get('description', project.description)
+            project.status = data.get('status', project.status)
+            project.end_date = data.get('end_date', project.end_date)
+            project.save()
+            return JsonResponse({'message': 'Project updated successfully'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
 
-    return render(request, 'project_page/updateprojectmodal.html', {'project': project})
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 @login_required
 def search_users(request, project_id):
@@ -275,7 +289,6 @@ def remove_member(request, project_id):
     
     return JsonResponse({'error': 'Invalid request'}, status=400)
     
-
 def is_owner(request, project_id):
     try:
         project = Project.objects.get(id=project_id)

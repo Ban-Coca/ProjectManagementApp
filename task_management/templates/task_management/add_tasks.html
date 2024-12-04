@@ -25,11 +25,12 @@
                     <input type="text" 
                            id="taskAssignee" 
                            list="users-list" 
+                           autocomplete="off" 
                            placeholder="Search members..." 
                            required>
-                    <datalist id="users-list">
+                    <ul id="users-list" class="dropdown-menu">
                         <!-- Will be populated by JavaScript -->
-                    </datalist>
+                    </ul>
                 </div>
             </div>
 
@@ -65,4 +66,3 @@
         </form>
     </div>
 </div>
-

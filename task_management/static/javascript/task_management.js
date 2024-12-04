@@ -1,7 +1,10 @@
-class TaskManagement{
-    constructor(){
+class TaskManagement {
+    constructor() {
         this.tasks = [];
         this.users = [];
+        this.searchTimeout = null;
+        this.selectedMemberIdInput = null;
+        this.selectedTaskId = null;
     }
     
     
@@ -22,6 +25,7 @@ class TaskManagement{
         // Modal setup
         this.setupModal();
         
+
         // Form setup
         this.setupTaskForm();
 
@@ -32,7 +36,8 @@ class TaskManagement{
         }
     }
     async fetchTasks() {
-        await fetch('/tasks/task_list/')
+        const projectId = this.getProjectIdFromUrl();
+        await fetch(`/tasks/task_list/${projectId}/`)
             .then(response => {
                 if (!response.ok) throw new Error('Failed to fetch tasks');
                 return response.json();
@@ -70,16 +75,29 @@ class TaskManagement{
     setupTaskForm() {
         const addTaskForm = document.getElementById('addTaskForm');
         const modal = document.getElementById('addTaskModal');
+        const searchInput = document.getElementById('taskAssignee');
+        const membersList = document.getElementById('users-list');
+    
+        // Disable browser autocomplete
+        searchInput.setAttribute('autocomplete', 'off');
+    
+        // Create a hidden input to store the selected member ID
+        this.selectedMemberIdInput = document.createElement('input');
+        this.selectedMemberIdInput.type = 'hidden';
+        this.selectedMemberIdInput.name = 'selectedMemberId';
+        addTaskForm.appendChild(this.selectedMemberIdInput);
+    
         if (!addTaskForm) {
             console.error('Task form not found');
             return;
         }
-        
+    
         addTaskForm.onsubmit = async (e) => {
             e.preventDefault();
             const formData = this.getFormData();
+            formData.assignee = this.selectedMemberIdInput.value; // Use the selected member ID
             console.log('Form data:', formData);
-            
+    
             try {
                 const response = await fetch('/tasks/add_task/', {
                     method: 'POST',
@@ -91,7 +109,7 @@ class TaskManagement{
                 });
     
                 const data = await response.json();
-                
+    
                 if (!response.ok) {
                     throw new Error(data.message || 'Failed to add task');
                 }
@@ -100,18 +118,82 @@ class TaskManagement{
                     Toast.show('Task added successfully', 'success');
                     addTaskForm.reset();
                     modal.style.display = 'none';
-                    this.fetchTasks(); // Refresh tasks instead of page reload
+                    this.fetchTasks();
                 }
             } catch (error) {
                 console.error('Error:', error);
                 Toast.show(error.message, 'error');
             }
         };
+    
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(this.searchTimeout);
+    
+            const searchTerm = e.target.value.trim();
+            if (!searchTerm) {
+                membersList.style.display = 'none'; // Hide dropdown if input is empty
+                membersList.innerHTML = ''; // Clear dropdown
+                return;
+            }
+    
+            // Debounce the search requests
+            this.searchTimeout = setTimeout(async () => {
+                const projectId = this.getProjectIdFromUrl();
+                if (!projectId) {
+                    console.error('Project ID is missing');
+                    return;
+                }
+    
+                membersList.style.display = 'block'; // Show dropdown
+                membersList.innerHTML = '<li class="loading">Searching members...</li>'; // Loading state
+                try {
+                    // Fetch members from the backend
+                    const response = await fetch(`/tasks/${projectId}/search_members/?q=${encodeURIComponent(searchTerm)}`);
+                    if (!response.ok) throw new Error('Search failed');
+    
+                    const users = await response.json();
+                    let resultsHTML = '';
+    
+                    if (users.length === 0) {
+                        resultsHTML += '<li class="no-results">No members found</li>';
+                    } else {
+                        users.forEach(user => {
+                            resultsHTML += `
+                                <li class="dropdown-item" data-user-id="${user.id}">
+                                    <div class="dropdown-box">
+                                        <div class="member-avatar">
+                                            <span class="avatar-text">${user.username.slice(0, 2).toUpperCase()}</span>
+                                        </div>
+                                        <div class="member-info">
+                                            <span class="member-name">${user.username}</span>
+                                            <span class="member-role">${user.role || ''}</span>
+                                        </div>
+                                    </div>
+                                </li>`;
+                        });
+                    }
+    
+                    membersList.innerHTML = resultsHTML;
+    
+                    // Add click event for selecting users from the dropdown
+                    membersList.querySelectorAll('.dropdown-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            searchInput.value = item.querySelector('.member-name').textContent; // Set selected user in the input
+                            this.selectedMemberIdInput.value = item.getAttribute('data-user-id'); // Set the user ID in the hidden input
+                            membersList.style.display = 'none'; // Hide dropdown
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error searching members:', error);
+                    membersList.innerHTML = '<li class="error">Search failed. Please try again.</li>';
+                }
+            }, 150); // 150ms debounce delay
+        });
     }
     
     getFormData() {
         const projectId = this.getProjectIdFromUrl();
-        console.log('Project ID:', projectId);  
+        console.log('Project ID:', projectId);
         return {
             project_id: projectId,
             title: document.getElementById('taskTitle')?.value,
@@ -119,7 +201,7 @@ class TaskManagement{
             status: document.getElementById('taskStatus')?.value,
             priority: document.getElementById('taskPriority')?.value,
             dueDate: document.getElementById('taskDueDate')?.value,
-            assignee: document.getElementById('taskAssignee')?.value,
+            assignee: this.selectedMemberIdInput.value, // Use the selected member ID
         };
     }
     
@@ -181,6 +263,7 @@ class TaskManagement{
             console.error('Invalid task ID');
             return;
         }
+        this.selectedTaskId = taskId;
     
         fetch(`/tasks/${taskId}/`)
             .then(response => {
@@ -324,6 +407,10 @@ class TaskManagement{
     
     renderTaskDetails(task) {
         console.log('Rendering task:', task);
+        this.selectedTaskId = task.task_id; // Ensure selectedTaskId is set
+        console.log('Selected Task ID:', this.selectedTaskId);
+
+
         let modal = document.getElementById('taskDetails');
         function formattingDate(dateString) {
             const date = new Date(dateString);
@@ -332,107 +419,111 @@ class TaskManagement{
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
           
-          
             return `${day}/${month}/${year}`;  
-          
         }
         const date = formattingDate(task.due_date);
-        console.log(date)
-        console.log(task.status)
+        console.log(date);
+        console.log(task.status);
         modal.innerHTML = ` 
+            <div class="task-view" id="taskView">
+                <div class="task-view-nav" id="task-nav">
+                    <div class="modal-header">
+                        <button class="close-button" id="closeTaskView">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 6L6 18" stroke="#666" stroke-linecap="round"/>
+                                <path d="M6 6L18 18" stroke="#666" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <button class="delete-button">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="task-content">
+                    <label for="taskTitle">Title</label>
+                    <input type="text" id="taskTitle" value="${task.title}" required>
     
-        <div class="task-view" id="taskView">
-            <div class="task-view-nav" id="task-nav">
-                <div class="modal-header">
-                    <button class="close-button">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 6L6 18" stroke="#666" stroke-linecap="round"/>
-                            <path d="M6 6L18 18" stroke="#666" stroke-linecap="round"/>
-                        </svg>
-                    </button>
-                    <button class="delete-button">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M3 6H5H21" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
+                    <div class="field-group">
+                        <span class="field-label">Assignee</span>
+                        <div class="field-value">
+                            <div class="avatar" id="assigneeAvatar">${task.assigned_to}</div>
+                        </div>
+                    </div>
+    
+                    <div class="field-group">
+                        <span class="field-label">Due Date</span>
+                        <div class="field-value">
+                            <input type="date" id="dueDate" value="${task.due_date}">
+                        </div>
+                    </div>
+    
+                    <div class="field-group">
+                        <span class="field-label">Project</span>
+                        <div class="field-value">
+                            <input type="text" id="project" value="${task.project_id}">
+                        </div>
+                    </div>
+    
+                    <div class="field-group">
+                        <span class="field-label">Priority</span>
+                        <div class="field-value priority-select-container">
+                            <select id="prioritySelect" class="priority-select">
+                                <option value="">Select priority</option>
+                                <option value="low" ${task.priority === 'LOW' ? 'selected' : ''}>
+                                    <span class="priority-pill low">Low</span>
+                                </option>
+                                <option value="medium" ${task.priority === 'MEDIUM' ? 'selected' : ''}>
+                                    <span class="priority-pill medium">Medium</span>
+                                </option>
+                                <option value="high" ${task.priority === 'HIGH' ? 'selected' : ''}>
+                                    <span class="priority-pill high">High</span>
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="field-group">
+                        <span class="field-label">Status</span>
+                        <div class="field-value">
+                            <select id="statusSelect" class="status-select">
+                                <option class="todo" value="todo" ${task.status === 'TODO' ? 'selected' : ''}>To do</option>
+                                <option class="inprog" value="in_progress" ${task.status === 'INPROGRESS' ? 'selected' : ''}>In Progress</option>
+                                <option class="done" value="done" ${task.status === 'DONE' ? 'selected' : ''}>Done</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="field-group description-group">
+                        <span class="field-label">Description</span>
+                        <div class="field-value">
+                            <textarea class="text-area" id="description" placeholder="Add a description...">${task.description || ''}</textarea>
+                        </div>
+                    </div>
+    
+                    <div class="comments-section">
+                        <span class="comments-title">Comments</span>
+                        <textarea class="text-area" id="comments" placeholder="Add a comment..."></textarea>
+                    </div>
+                    <!--
+                    <div class="modal-buttons">
+                        <button id="saveChangesBtn" class="submitBtn">Save Changes</button>
+                    </div>
+                    -->
                 </div>
             </div>
-            <div class="task-content">
-                <h1 class="task-title" id="taskTitle" contenteditable="true">${task.title}</h1>
-    
-                <div class="field-group">
-                    <span class="field-label">Assignee</span>
-                    <div class="field-value">
-                        <div class="avatar" id="assigneeAvatar">${task.assigned_to}</div>
-                    </div>
-                </div>
-    
-                <div class="field-group">
-                    <span class="field-label">Due Date</span>
-                    <div class="field-value">
-                        <input type="date" id="dueDate">
-                    </div>
-                </div>
-    
-                <div class="field-group">
-                    <span class="field-label">Project</span>
-                    <div class="field-value">
-                        <input type="text" id="project" value="${task.project_id}">
-                    </div>
-                </div>
-    
-                <div class="field-group">
-                    <span class="field-label">Priority</span>
-                    <div class="field-value priority-select-container">
-                        <select id="prioritySelect" class="priority-select">
-                            <option value="">Select priority</option>
-                            <option value="low" ${task.priority === 'LOW' ? 'selected' : ''}>
-                                <span class="priority-pill low">Low</span>
-                            </option>
-                            <option value="medium" ${task.priority === 'MEDIUM' ? 'selected' : ''}>
-                                <span class="priority-pill medium">Medium</span>
-                            </option>
-                            <option value="high" ${task.priority === 'HIGH' ? 'selected' : ''}>
-                                <span class="priority-pill high">High</span>
-                            </option>
-                        </select>
-                    </div>
-                </div>
-    
-                <div class="field-group">
-                    <span class="field-label">Status</span>
-                    <div class="field-value">
-                        <select id="statusSelect" class="status-select">
-                            <option class="todo" value="todo" ${task.status === 'TODO' ? 'selected' : ''}>To do</option>
-                            <option class="inprog" value="in_progress" ${task.status === 'INPROGRESS' ? 'selected' : ''}>In Progress</option>
-                            <option class="done" value="done" ${task.status === 'DONE' ? 'selected' : ''}>Done</option>
-                        </select>
-                    </div>
-                </div>
-    
-                <div class="field-group description-group">
-                    <span class="field-label">Description</span>
-                    <div class="field-value">
-                        <textarea class="text-area" id="description" placeholder="Add a description...">${task.description || ''}</textarea>
-                    </div>
-                </div>
-    
-                <div class="comments-section">
-                    <span class="comments-title">Comments</span>
-                    <textarea class="text-area" id="comments" placeholder="Add a comment..."></textarea>
-                </div>
-            </div>
-        </div>
         `;
-    
+        const taskTitle = modal.querySelector('#taskTitle');
+        console.log(taskTitle.value);
+        console.log(task.title);
         const dueDate = modal.querySelector('#dueDate');
         dueDate.value = task.due_date;
         let content = modal.querySelector('#taskView');
         modal.style.visibility = 'visible';
     
         content.classList.add('modal-show');
-        
     
         this.makeFieldsEditable(task.task_id);
     
@@ -453,6 +544,58 @@ class TaskManagement{
             }
         }
     
+        // const saveChangesBtn = modal.querySelector('.submitBtn');
+    
+        // // Handle the "Save Changes" button click
+        // saveChangesBtn.onclick = () => {
+        //     // Collect form data
+        //     const taskTitle = document.getElementById('taskTitle').value;
+        //     const dueDate = document.getElementById('dueDate').value;
+        //     const project = document.getElementById('project').value;
+        //     const priority = document.getElementById('prioritySelect').value;
+        //     const status = document.getElementById('statusSelect').value;
+        //     const description = document.getElementById('description').value;
+    
+        //     // Debugging statements
+        //     console.log('Task Title:', taskTitle);
+        //     console.log('Due Date:', dueDate);
+        //     console.log('Project:', project);
+        //     console.log('Priority:', priority);
+        //     console.log('Status:', status);
+        //     console.log('Description:', description);
+    
+        //     // Send a PUT request to update the task details
+        //     fetch(`/tasks/update_simple/${this.selectedTaskId}/`, {
+        //         method: 'PUT',
+        //         headers: {
+        //             'X-CSRFToken': this.getCookie('csrftoken'), // Ensure you have CSRF protection
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({
+        //             title: taskTitle,
+        //             due_date: dueDate,
+        //             project_id: project,
+        //             priority: priority,
+        //             status: status,
+        //             description: description
+        //         })
+        //     })
+        //     .then(response => {
+        //         if (response.ok) {
+        //             console.log('Task updated successfully.');
+        //             modal.style.visibility = 'hidden';
+        //             history.pushState(null, '', '/');
+        //             content.classList.remove('modal-hide');
+        //             content.classList.add('modal-show');
+        //         } else {
+        //             throw new Error('Network response was not ok.');
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.error('There was a problem with the update operation:', error);
+        //     });
+        // };
+
         const deleteBtn = modal.querySelector('.delete-button');
         deleteBtn.onclick = () => {
             // Check if delete modal exists, if not create it
@@ -515,10 +658,7 @@ class TaskManagement{
                 }
             };
         };
-    
     }
-    
-    
     
     // // DELETE TASK
     deleteTask(task){

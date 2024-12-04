@@ -18,13 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
 from task_management.views import tasks_list
+from user_authentication.views import redirect_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user_auth/', include('user_authentication.urls')),
-    path('', RedirectView.as_view(url='/user_auth/login/', permanent=False)),
+    path('', redirect_view, name='redirect_view'),
     path('projects/', include('project_planning_and_scheduling.urls')),
     path('home/',include('home.urls')),
+    path('tasks/', include('task_management.urls')),
     path('dashboard/',include('dashboard.urls')),
     path('tasks/', tasks_list, name='task_list'),
 ]

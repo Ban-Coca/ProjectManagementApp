@@ -1,6 +1,6 @@
 <!-- Modal for Creating New Project -->
 <div id="projectModal" class="modal" style="display: none;">
-    <div class="modal-content">
+    <div class="create-modal-content">
         <span class="close" id="closeModalBtn">&times;</span>
         <h2>Create New Project</h2>
         <div class="form-scroll-container"> <!-- Container for horizontal scrolling -->
@@ -35,24 +35,26 @@
         width: 100%; /* Full width */
         height: 100%; /* Full height */
         background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        z-index: 1000; /* Make sure it appears above other content */
+        z-index: 1000;
     }
 
-    .modal-content {
+    .create-modal-content {
         background-color: #fff; /* White background for modal content */
         padding: 20px; /* Padding inside the modal */
         border-radius: 5px; /* Rounded corners */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for the modal */
         max-width: 500px; /* Set a maximum width for the modal */
         width: 90%; /* Full width within max width */
-        margin-top: 0; /* Remove margin-top */
-        transform: translateY(-25%); /* Move up by 10% of its height */
         overflow: hidden; /* Hide overflow of modal content */
+        left:33%;
+        top:18%;
+        position: relative; /* Make sure it's positioned relative to its parent */
+        max-height: 500px;
     }
 
     /* Container for horizontal scrolling */
     .form-scroll-container {
-        max-height: 450px; /* Limit height for scrolling */
+        max-height: 400px; /* Limit height for scrolling */
         overflow-y: auto; /* Enable vertical scrolling */
         padding-right: 30px; /* Prevent scrollbar from overlapping content */
     }
