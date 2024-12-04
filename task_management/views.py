@@ -1,18 +1,24 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.core.exceptions import ValidationError
 import json
 import logging
 from .models import Tasks
+from project_planning_and_scheduling.models import Project
 from .forms import TaskForm
 from user_authentication.models import User
 from django.db.models import Q
+from django.core.files.storage import default_storage
+from django.conf import settings
+import os
+import mimetypes
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 logger = logging.getLogger(__name__)
 # Create your views here.
-def task_management(request):
+def task_management(request, id):
     return render(request, 'task_management/task_management.html')
 
 def kanban_board(request):
@@ -38,20 +44,24 @@ def list_tasks(request):
 def add_task(request):
     if request.method == 'POST':
         try:
+            print(f"Raw request body: {request.body}")
             data = json.loads(request.body)
+            
+            
             task = Tasks(
+                project_id=data['project_id'], # Ensure this matches your model field
                 title=data['title'],
                 description=data['description'],
                 status=data['status'],
                 priority=data['priority'],
                 due_date=data['dueDate'],
-                assigned_to=data['assignee']  # Ensure this matches your model field
+                assigned_to=data['assignee'],
+                 # Ensure this matches your model field
             )
             task.save()
             return JsonResponse({'success': True})
         except Exception as e:
-            # Log the error message
-            print(f"Error: {str(e)}")
+            logger.error(f"Error: {str(e)}")
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
@@ -103,8 +113,7 @@ def update_task(request, task_id):
         # Save the changes
         task.save(update_fields=[field])
 
-        # Print for debugging
-        print(f'Updated task {task_id}: {field} = {value}')
+        logger.debug(f'Updated task {task_id}: {field} = {value}')
 
         return JsonResponse({
             'success': True,
@@ -116,22 +125,19 @@ def update_task(request, task_id):
         })
 
     except json.JSONDecodeError:
-        print('Invalid JSON in request body')
+        logger.error('Invalid JSON in request body')
         return JsonResponse({
             'success': False,
             'message': 'Invalid JSON in request body'
         }, status=400)
     
     except Exception as e:
-        # Print the error for debugging
-        print(f"Error updating task {task_id}: {str(e)}")
-        
+        logger.error(f"Error updating task {task_id}: {str(e)}")
         return JsonResponse({
             'success': False,
             'message': 'An unexpected error occurred',
             'error': str(e)
         }, status=500)
-
 
 @require_http_methods(["DELETE"])
 def delete_task(request, task_id):
@@ -139,13 +145,48 @@ def delete_task(request, task_id):
     task.delete()
     return JsonResponse({'success': True})
 
-
 # def search_users(request):
 #     query = request.GET.get('q', '')
 #     users = User.objects.filter(
 #         Q(username__icontains=query) |
-#         Q(email__icontains=query)
+#         Q(email__icontains(query)
 #     ).values('id', 'username', 'email')[:10]
     
 #     return JsonResponse(list(users), safe=False)
-    
+
+@require_http_methods(["POST"])
+def upload_file(request):
+    if request.FILES.get('file'):
+        try:
+            file = request.FILES['file']
+            file_name = default_storage.save(file.name, file)
+            return JsonResponse({'fileName': file_name})
+        except Exception as e:
+            logger.error(f"Error uploading file: {str(e)}")
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'No file provided'}, status=400)
+
+@require_http_methods(["GET"])
+@xframe_options_exempt
+def view_file(request, filename):
+    try:
+        file_path = default_storage.path(filename)
+        if os.path.exists(file_path):
+            content_type, _ = mimetypes.guess_type(file_path)
+            response = FileResponse(open(file_path, 'rb'), content_type=content_type)
+            # Don't set Content-Disposition to allow browser to display inline
+            response['X-Frame-Options'] = 'SAMEORIGIN'
+            return response
+        return JsonResponse({'error': 'File not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=404)
+
+@require_http_methods(["GET"])
+def documents(request):
+    try:
+        # Get files from media directory
+        files = [{'name': name} for name in os.listdir(settings.MEDIA_ROOT)]
+        return render(request, 'task_management/documents.html', {'files': files})
+    except Exception as e:
+        logger.error(f"Error listing files: {str(e)}")
+        return render(request, 'task_management/documents.html', {'files': [], 'error': str(e)})

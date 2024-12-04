@@ -20,7 +20,9 @@
                 <div class="nav-button">
                     <button class="tab-link active" data-tab="overview">Overview</button>
                     <button class="tab-link" data-tab="task_table">Tasks</button>
-                    <button class="tab-link" data-tab="members">Board</button>
+                    <button class="tab-link" data-tab="board">Board</button>
+                    <button class="tab-link" data-tab="calendarTab">Calendar</button>
+                    <button class="tab-link" data-tab="documents">Documents</button>
                 </div>
             </div>
             <div id="overview" class="tab_content active">
@@ -61,7 +63,14 @@
             
             <div id="board" class="tab_content">
                 {% include 'task_management/kanban_board.html' %}
-            </div> 
+            </div>
+            <div id="calendarTab" class="tab_content">
+                <div id='calendar'>{% include 'task_management/calendar.html' %}</div>
+            </div>
+
+            <div id="documents" class="tab_content">
+                {% include 'task_management/documents.html' %}
+            </div>
         </div>
         <!-- Include the Create Project Modal -->
         {% include 'project_page/addmembermodal.html' %}

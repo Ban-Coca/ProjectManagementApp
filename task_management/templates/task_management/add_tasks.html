@@ -12,7 +12,13 @@
                 <h3>Task Description</h3>
                 <textarea id="taskDescription" placeholder="Task Description" required></textarea>
             </div>
-            
+            <div type="project_id" class="project">
+                <input type="hidden" 
+                       id="taskProjectId" 
+                       name="taskProjectId" 
+                       value="{{ id }}"
+                       data-project-id="{{ id }}">
+            </div>
             <div id="members" class="members">
                 <h3>Members</h3>
                 <div class="user-search-container">

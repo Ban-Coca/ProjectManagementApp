@@ -1,0 +1,141 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Disable scrolling */
+}
+
+.documents_container {
+    background-color: #D9D9D9;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.top-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex: 0 0 auto; /* Don't shrink or grow */
+}
+
+.choose-file {
+    margin-right: auto; /* Push "Choose File" to the far left */
+}
+
+.choose-file label {
+    padding: 8px 12px;
+    background-color: #A49898;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.choose-file input[type="file"] {
+    display: none;
+}
+
+.choose-file label:hover {
+    background-color: #333333;
+}
+
+.search-container {
+    width: 150px; /* Compact width for search bar */
+    margin-right: 10px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-left: -10%;
+}
+
+.upload-button {
+    padding: 8px 16px;
+    background-color: #A49898;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.upload-button:hover {
+    background-color: #333333;
+}
+
+#uploadedFiles {
+    overflow: auto;
+    flex: 1; /* Use remaining space */
+    overflow-y: auto;
+    margin-top: 20px;
+    padding-right: 10px; /* Add some padding for the scrollbar */
+}
+
+/* Customize scrollbar for better appearance */
+#uploadedFiles::-webkit-scrollbar {
+    width: 8px;
+}
+
+#uploadedFiles::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#uploadedFiles::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+#uploadedFiles::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.file-item {
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.file-item:hover {
+    background-color: #f5f5f5;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    width: 90%;
+    height: 90%;
+    background: white;
+    overflow: auto;
+}
+
+.close-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}

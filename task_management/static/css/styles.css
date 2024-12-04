@@ -243,7 +243,7 @@ td:hover {
 	}
 }
 
-/* Notification styles */
+
 .edit-input {
     border: none;
     border-bottom: 1px solid #ccc;
@@ -252,7 +252,7 @@ td:hover {
     font-size: inherit;
 }
 
-
+/* Notification styles */
 .toast-notification {
     position: fixed;
     bottom: 24px;  /* Changed from top to bottom */
