@@ -20,14 +20,21 @@
             </select>
 
             <div class="modal-buttons">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <button type="button" id='cancelUpdateBtn' class="btn btn-secondary" onclick="closeUpdateModal()">Cancel</button>
+                <button type="submit" class="savebtn">Save Changes</button>
+                <button type="button" id='cancelUpdateBtn' class="savebtn" onclick="closeUpdateModal()">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
 <style>
+    .savebtn {
+        margin-top: 10px;
+        background-color: #A49898;
+        padding: 10px;
+        border-radius: 5px;
+        border: 'none';
+    }
     /* Modal container */
     .update-modal {
         display: none; /* Hidden by default */

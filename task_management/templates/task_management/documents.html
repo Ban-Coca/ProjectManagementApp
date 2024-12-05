@@ -1,16 +1,16 @@
-{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documents</title>
+    {% load static %}
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'css/documents.css' %}">
 </head>
 <body>
     <div class="documents_container">
-        <form id="uploadForm" class="top-controls" action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" class="top-controls" action="{% url 'task_management:upload_file' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="choose-file">
                 <label for="fileInput">Choose File</label>
@@ -95,7 +95,7 @@
             });
         }
         function viewFile(fileName) {
-            const fileUrl = "{% url 'view_file' 'FILENAME' %}".replace('FILENAME', fileName);
+            const fileUrl = "{% url 'task_management:view_file' 'FILENAME' %}".replace('FILENAME', fileName);
             const fileContent = document.getElementById('fileContent');
             const modal = document.getElementById('fileViewerModal');
             

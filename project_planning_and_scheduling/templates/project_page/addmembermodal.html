@@ -8,7 +8,7 @@
         <div class="member-invite-container">
             <div class="search-member">
                 <input type="text" id="search-input" placeholder="Search users to add..." class="search-input" autocomplete="off">
-                <button class="close-button" aria-label="Clear search">×</button>
+                <button class="clear-button" aria-label="Clear search">×</button>
             </div>
 
             <div class="members-section">
@@ -79,7 +79,7 @@
         });
 
         // Clear search input when clicking the close button (X)
-        const closeButton = document.querySelector('.close-button');
+        const closeButton = document.querySelector('.clear-button');
         closeButton.addEventListener('click', () => {
             searchInput.value = '';  // Clear the search input
             loadProjectMembers();  // Reload project members
@@ -256,12 +256,13 @@
         width: 100%;
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
+        z-index: 1;
         justify-content: center;
         align-items: center;
     }
 
     .modal-content {
+        height: 50%;
         background-color: #fff;
         border-radius: 8px;
         width: 90%;
@@ -312,7 +313,7 @@
         outline: none;
     }
 
-    .close-button {
+    .clear-button{
         background: none;
         border: none;
         color: #666;

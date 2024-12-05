@@ -96,7 +96,7 @@ td:hover {
     background-color: rgba(0,0,0,0.4);
 }
 
-.modal-content {
+.task-modal-content {
     background-color: #fefefe;
     margin: 10% auto;
     padding: 20px;
@@ -104,7 +104,7 @@ td:hover {
     width: 80%;
     max-width: 500px;
     border-radius: 8px;
-    transform: translate(0%, -25%);
+    top: 20%;
 }
 .close {
     color: #aaa;

@@ -63,7 +63,10 @@ html, body {
     background-color: #A49898;
     border-radius: 4px;
 }
-
+.left-list{
+    width: 100%;
+    max-width: 400px;
+}
 .projects p {
     font-size: larger;
     margin-left: 20px;
@@ -105,7 +108,7 @@ html, body {
 
 .project-info {
     display: flex;
-    justify-content: space-between;
+    gap: 400px;
 }
 
 .project-card h3 {

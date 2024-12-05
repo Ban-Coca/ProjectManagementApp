@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const updateProjectForm = document.getElementById('updateProjectForm'); // Update form
     const closeIcon = document.getElementById("closeIcon");
     let selectedProjectId = null; // Store the project ID to delete or update
-
+    
     // Handle delete project action via more-options dropdown
     document.querySelectorAll('.delete-project').forEach(button => {
         button.addEventListener('click', function(event) {
