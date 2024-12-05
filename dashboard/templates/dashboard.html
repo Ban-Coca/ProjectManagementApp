@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/dashboard.js' %}" defer></script>
+</head>
+<body>
+    {% include 'components/searchbar.html' %}
+    <div class="under">
+        {% include 'components/sidebar.html' %}
+        <div class="main-content">
+            <div class="header">
+                <h1>Dashboard</h1>
+                <div class="dropdown">
+                    <button class="proj_select" id="projectDropdown" data-selected-project-id="{{ selected_project.id|default:0 }}">
+                        {% if selected_project %}
+                            {{ selected_project.title }}
+                        {% else %}
+                            All Projects
+                        {% endif %}
+                        &#9662;
+                    </button>
+                    <div class="dropdown-content" id="projectList">
+                        <a href="?project_id=0" class="dropdown-item {% if not selected_project %}active{% endif %}">
+                            All Projects
+                        </a>
+                        {% for project in projects %}
+                            <a href="?project_id={{ project.id }}" 
+                            class="dropdown-item {% if selected_project and selected_project.id == project.id %}active{% endif %}" 
+                            data-project-id="{{ project.id }}">
+                            {{ project.title }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>                
+            </div>
+
+            <div class="dashboard-welcome">
+                <h2>Welcome to Dashboard</h2>
+                <p>Monitor your project's progress, track tasks, and view important statistics here. Click on [Select Project] at the top right to view tasks and visualize statistics in your Workspace.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card" id="toDoCard" draggable="true">
+                    <h3>
+                        To-Do
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" id="refreshToDo" />
+                        </div>
+                    </h3>
+                    <div class="to-do" style="font-size: 30px; margin-bottom: 5px; font-weight: bold;">0</div> <!-- Data will be updated by JS -->
+                    <div class="stat-label">To-Do Tasks</div>
+                </div>
+            
+                <div class="stat-card" id="inProgressCard" draggable="true">
+                    <h3>
+                        In Progress
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" id="refreshInProgress" />
+                        </div>
+                    </h3>
+                    <div class="in-progress" style="font-size: 30px; margin-bottom: 5px; font-weight: bold;">0</div> <!-- Data will be updated by JS -->
+                    <div class="stat-label">Tasks in Progress</div>
+                </div>
+            
+                <div class="stat-card" id="completedCard" draggable="true">
+                    <h3>
+                        Done
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" id="refreshCompleted" />
+                        </div>
+                    </h3>
+                    <div class="completed" style="font-size: 30px; margin-bottom: 5px; font-weight: bold;">0</div> <!-- Data will be updated by JS -->
+                    <div class="stat-label">Done Tasks</div>
+                </div>
+            </div>
+            
+            <div class="charts-grid">
+                <div class="chart-card" id="taskStatusChartCard" draggable="true">
+                    <div class="chart-header">
+                        <h3>Task Status Distribution</h3>
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" id="refreshTaskStatusChart" />
+                        </div>
+                    </div>
+                    <canvas id="taskStatusChart" class="chart-placeholder"></canvas>
+                </div>
+                <div class="chart-card" id="totalTasksPerProjectChartCard" draggable="true">
+                    <div class="chart-header">
+                        <h3>Total Tasks Per Project</h3>
+                        <div class="more-options">
+                            <img src="{% static 'images/refresh.png' %}" alt="Refresh" class="refresh-icon" id="refreshtotalTasksPerProjectChart" />
+                        </div>
+                    </div>
+                    <canvas id="totalTasksPerProjectChart" class="chart-placeholder"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

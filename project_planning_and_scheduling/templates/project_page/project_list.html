@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project List</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/project_list.css' %}">
+    <script src="{% static 'js/create_project.js' %}" defer></script> 
+</head>
+<body>
+    {% include 'components/searchbar.html' %}
+    <div class="under">
+        {% include 'components/sidebar.html' %}
+        {% block content %}
+            <div class="main-content">
+                <div class="header">
+                    <h1>Project List</h1>
+                    <button class="create-project" id="createProjectBtn">Create project +</button>
+                </div>
+                <div class="projects">
+                    <div class="project-cards">
+                        {% if projects %}
+                            {% for project in projects %}
+                                <div class="project-card">
+                                    <a href="{% url 'project_planning_and_scheduling:project_detail' project.id %}">
+                                        <div data-project-id="{{ project.id }}" class="project-info">
+                                            <div class="left-list">
+                                                <h3>{{ project.title }}</h3>
+                                                <p>Deadline: {{ project.end_date }}</p>
+                                            </div>
+                                            <div class="right-list">
+                                                <h3>Status: </h3>
+                                                <h3 class="status-text" 
+                                                    {% if project.status == 'To Do' %}
+                                                        style="color: grey;"
+                                                    {% elif project.status == 'In Progress' %}
+                                                        style="color: blue;"
+                                                    {% elif project.status == 'Done' %}
+                                                        style="color: green;"
+                                                    {% endif %}
+                                                >
+                                                    {{ project.status }}
+                                                </h3>
+                                            </div>
+                                            
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No Assigned Project</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+
+        <!-- Include the Create Project Modal -->
+        {% include 'project_page/createprojectmodal.html' %}
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const projectCards = document.querySelectorAll(".project-card");
+            projectCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>

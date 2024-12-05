@@ -1,0 +1,322 @@
+/* Ensure body and html take full height */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.under {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row; /* Ensure the sidebar and main content are in a row */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-content {
+    max-width: 183vh;
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f5f5f5;
+    margin-top: 60px;
+    height: calc(98vh - 90px); /* Adjust height considering the search box */
+}
+
+.add-member-btn {
+    margin-left: 15px;
+    height: 30px;
+    width: 30px;
+    text-decoration: none; 
+    border-radius: 10px;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+.tasks h2{
+    color: white;
+    margin-left: 10px;
+}
+.project{
+    display: flex;
+    gap: 30px
+}
+#overview, #task_table {
+    background-color: #e0e0e0;
+    height: 69vh;
+    border-radius: 5px;
+}
+
+.overview-button,
+.list-button,
+.board-button {
+    text-decoration: none; 
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    padding: 10px;
+    color: black;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.overview-button:hover,
+.list-button:hover,
+.board-button:hover {
+    background-color: #d0d0d0; /* Change color on hover */
+}
+
+.project-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.project-members .members-list{
+    display:flex;
+    flex-direction: column;
+}
+
+.nav-button {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+/* Project description */
+.project-description {
+    padding: 10px;
+    margin-top: 10px;
+    margin-left: 15px;
+    margin-bottom: 20px;
+}
+
+.project-description p{
+    margin-left: 30px;
+    font-size: 18px;
+    color: #333;
+    margin-top: 10px;
+}
+
+.project-details {
+    margin-left: 10px;
+    padding: 10px;
+    display: flex;
+    gap: 180px;
+    margin-left: 20px;
+    padding: 10px;
+}
+
+.members {
+    display: flex;
+    gap: 10px;
+}
+
+.member {
+    background-color: #d0d0d0;
+    padding: 5px 10px;
+    border-radius: 15px;
+}
+.members-list {
+    gap: 10px; /* Add space between members */
+}
+
+.project-members .member-item {
+    background-color: #d0d0d0; /* Background color for member items */
+    padding: 10px; /* Padding for member items */
+    border-radius: 5px; /* Rounded corners for member items */
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+}
+
+.member-name {
+    font-weight: bold;
+    color: #333;
+}
+.tasks {
+    margin-right: 100px;
+    background-color: #A49898;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 20px;
+    width: 35%;
+}
+
+.project-nav button {
+    background-color: #A49898; /* Button color */
+    color: #fff; /* Text color */
+    padding: 10px 15px; /* Padding */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.main-content button:hover {
+    background-color: #b0a8a8; /* Darker shade on hover */
+}
+
+.tab-link.active {
+    background-color: #282b2e;
+    color: white;
+}
+
+.tab_content {
+    display: none;
+    height: 69vh;
+    border-radius: 5px;
+    overflow: auto;
+}
+.tab_content.active {
+    display: block;
+}
+
+.calendar-wrapper {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    height: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#calendar {
+    height: 100%;
+    min-height: 500px;
+}
+
+.more-options label {
+    font-weight: bold;
+}
+.more-options {
+    margin-left: 10px;
+}
+
+.more-options-btn {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    font-size: 1.5rem;
+    color: #333;
+    height: 40px; /* Adjust as needed */
+    width: 40px;  /* Adjust as needed */
+}
+
+.options-dropdown {
+    width: 9%;
+    display: none;
+    position: absolute;
+    top: 110px;
+    right: 30px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.more-options:hover .options-dropdown {
+    display: block;
+}
+
+.options-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.options-dropdown li {
+    align-items: center;
+    padding: 18px;
+}
+
+.options-dropdown li:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.options-dropdown li a {
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: #333;
+}
+
+.options-dropdown li:hover a {
+    color: #b49595;
+}
+
+.task-info{
+    margin-right: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    gap: 115px;
+    font-size: 18px;
+}
+
+.task-title{    
+    font-size: 10px; 
+    font-weight: bold;
+
+}
+
+.desc-img {
+    width: 6%;
+    height: 6%;
+}
+
+.description-header{
+    align-items: center;
+    gap: 10px;
+    display: flex;
+}
+
+.icon {
+    height: 12%;
+    width: 12%;
+}
+
+.delete-project img,
+.update-project img,
+.add-member img
+{
+    margin-right: 5px;
+}
+
+.iconBox{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    gap: 5px;
+}
+
+.member-img{
+    width: 10%;
+    height: 10%;
+}
+
+.member-header{
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.deadline-header{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.deadline-img{
+    width: 10%;
+    height: 10%;
+}

@@ -1,0 +1,150 @@
+<div class="sidebar">
+    {% load static %}
+    <nav role="navigation">
+        <ul>
+            <li class="nav-container {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                <a href="{% url 'home:home' %}" class="nav-link" aria-label="Home">
+                    <div class="nav-item">
+                        <img src="{% static 'images/home.png' %}" alt="Home Icon" class="sidebar-icon">
+                        <p>Home</p>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-container {% if request.resolver_match.url_name == 'projects_list' or request.resolver_match.url_name == 'project_detail' %}active{% endif %}">
+                <a href="{% url 'project_planning_and_scheduling:projects_list' %}" class="nav-link" aria-label="Projects">
+                    <div class="nav-item">
+                        <img src="{% static 'images/project.png' %}" alt="Projects Icon" class="sidebar-icon">
+                        <p>Projects</p>
+                    </div>
+                </a>
+            </li>
+            <!-- Check if "Dashboards" is meant to be different from "Home" -->
+            <li class="nav-container {% if request.resolver_match.url_name == 'dashboard_view' %}active{% endif %}">
+                <a href="{% url 'dashboard:dashboard_view' %}" class="nav-link" aria-label="Dashboards">
+                    <div class="nav-item">
+                        <img src="{% static 'images/dashboard.png' %}" alt="Dashboards Icon" class="sidebar-icon">
+                        <p>Dashboard</p>
+                    </div>
+                </a>
+            </li>
+        </ul>    
+        <div class="sidebar-footer">
+            <hr class="underline_sidebar">
+            <ul>
+                <li class="nav-container">
+                    <form action="{% url 'auth:logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link" aria-label="Logout" style="background: none; border: none; padding: 0; color: inherit;">
+                            <div class="nav-item">
+                                <img src="{% static 'images/logout.png' %}" alt="Logout Icon" class="sidebar-icon">
+                                <p>Logout</p>
+                            </div>
+                        </button>
+                    </form>
+                </li>
+                <li class="nav-container">
+                    <a href="{% url 'home:home' %}" class="nav-link" aria-label="Help">
+                        <div class="nav-item">
+                            <img src="{% static 'images/help.png' %}" alt="Help Icon" class="sidebar-icon">
+                            <p>Help</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>            
+    </nav>
+</div>
+
+<style>
+    .underline_sidebar {
+        width: 100%;
+        max-width: 190px;
+        border: none;
+        height: 2px;
+        background-color: #000;
+        margin-bottom: 30px;
+    }
+
+    .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .sidebar {
+        margin-top: 57px;
+        width: 100%;
+        max-width: 228px;
+        background-color: #A49898 !important; /* Force the background color */
+        height: calc(100.40vh - 60px); /* Full height minus search bar height */
+        display: flex; /* Enable flexbox */
+        flex-direction: column; /* Stack children vertically */
+        padding: 0 10px; /* Add horizontal padding for responsiveness */
+    }
+
+    .nav-container {
+        display: flex; /* Use flexbox */
+        align-items: center; /* Center vertically */
+        padding: 5px;
+        width: 96%;
+        margin: 5px 0; /* Add vertical space */
+        border-radius: 10px;
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+    }
+
+    .nav-item {
+        display: flex;
+        flex-grow: 1; /* Allow the nav item to grow */
+    }
+
+    .sidebar p {
+        margin-left: 10px; /* Adjusted for responsiveness */
+        font-size: 16px; /* Adjust font size */
+    }
+
+    .nav-link,
+    .nav-container form {
+        align-items: center; /* Center items vertically */
+        text-decoration: none; /* Removes the underline from links */
+        color: black; /* Ensures link color inherits from parent */
+        font-size: 18px; /* Adjust the font size */
+        padding: 5px; /* Add some padding */
+        width: 100%;
+    }
+
+    .sidebar-icon {
+        margin-top: 13px;
+        margin-left: 15px;
+        width: 20px; /* Fixed width */
+        height: 20px; /* Fixed height */
+        margin-right: 8px; /* Space between the icon and text */
+        vertical-align: middle; /* Align icon vertically with text */
+        display: inline-block; /* Ensure it behaves like inline elements */
+    }
+
+    .sidebar-footer {
+        margin-top: auto; /* Pushes footer items to the bottom */
+    }
+
+    /* Active state for nav containers */
+    .nav-container.active {
+        background-color: #796262; /* Color for the active state */
+    }
+
+    /* Hover effect only for non-active nav containers */
+    .nav-container:not(.active):hover {
+        background-color: rgba(228, 228, 228, 0.5); /* Light gray with 50% transparency */
+    }
+
+    /* Prevent hover effect on active items */
+    .nav-container.active:hover {
+        background-color: #796262; /* Keeps the active color unchanged on hover */
+    }
+
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 30 0;
+        flex-grow: 1;
+    }
+</style>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }} - Project Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
+    <script src="{% static 'js/project_detail.js' %}" defer></script>
+    <script src="{% static 'js/project_options.js' %}" defer></script>
+</head>
+<body>
+{% block content %}
+    {% csrf_token %}
+    {% include 'components/searchbar.html' %}
+    <div class="under">
+        {% include 'components/sidebar.html' %}
+        <div class="main-content">
+            <div class="header">
+                <h1>{{ project.title }}</h1>
+                <div class="more-options">
+                    <button class="more-options-btn" aria-label="More options">&#8230;</button>
+                    <div class="options-dropdown">
+                        <ul>
+                            <li class="clickable-item" data-project-id="{{ project.id }}" data-action="delete">
+                                <a class="delete-project" data-project-id="{{ project.id }}">
+                                    <img src="{% static 'images/delete.png' %}" alt="Delete Icon" class="icon"> Delete
+                                </a>
+                            </li>
+                            <li class="clickable-item" data-project-id="{{ project.id }}" data-action="update">
+                                <a class="update-project" data-project-id="{{ project.id }}">
+                                    <img src="{% static 'images/update.png' %}" alt="Update Icon" class="icon"> Update
+                                </a>
+                            </li>
+                            {% if is_owner %}
+                            <li class="clickable-item" data-project-id="{{ project.id }}" data-action="add-member">
+                                <a id="addMemberButton" data-project-id="{{ project.id }}" class="add-member">
+                                    <img src="{% static 'images/addmember.png' %}" alt="Add Member Icon" class="icon"> Add Member
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="project-nav">
+                <div class="nav-button">
+                    <button class="tab-link active" data-tab="overview">Overview</button>
+                    <button class="tab-link" data-project-id="{{ project.id }}" data-tab="task_table">Tasks</button>
+                    <button class="tab-link" data-tab="board">Board</button>
+                    <button class="tab-link" data-tab="calendarTab">Calendar</button>
+                    <button class="tab-link" data-tab="documents">Documents</button>
+                </div>
+            </div>
+            <div id="overview" class="tab_content active">
+                <div class="project">
+                    <div>
+                        <div class="project-description">
+                            <div class="description-header">
+                                <image src="{% static 'images/description.png' %}" class='desc-img'alt="Description">
+                                <h2>Project Description</h2>
+                            </div>
+                            
+                            <p>{{ project.description }}</p>
+                        </div>
+                        <div class="project-details">
+                            <div class="project-members">
+                                <div class="member-header">
+                                    <image src="{% static 'images/members.png' %}" class='member-img'alt="Members">
+                                    <h2>Members</h2>
+                                </div>
+                                <div class="members-list">
+                                    <!-- Project Members -->
+                                    {% for member in members %}
+                                    <div class="member-item">
+                                        <div class="member-avatar">
+                                            <span class="avatar-text">{{ member.user.username|slice:":2"|upper }}</span>
+                                        </div>
+                                        <div class="member-info">
+                                            <span class="member-name">{{ member.user.username }}</span>
+                                            <span class="member-role">{{ member.role }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="deadline">
+                                <div class="deadline-header">
+                                    <image src="{% static 'images/deadline.png' %}" class='deadline-img'alt="Deadline"></image>
+                                    <h2>Deadline</h2>
+                                </div>
+                                <p>{{ project.end_date }}</p>
+                                <p class="time-remaining" data-date="{{ project.end_date }}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tasks">
+                        <h2>Tasks</h2>
+                        <ul>
+                            {% for task in tasks %}
+                            <div class="task-info">
+                                <div class="proj-task-title">
+                                    {{ task.title }}
+                                </div>
+                                <div class="proj-task-status {% if task.status == 'DONE' %}done{% elif task.status == 'INPROGRESS' %}in-progress{% endif %}">
+                                    {{ task.status }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div id="task_table" class="tab_content">
+                {% include 'task_management/task_management.html' %}
+            </div>
+
+            <div id="board" class="tab_content">
+                {% include 'task_management/kanban_board.html' %}
+            </div>
+            <div id="calendarTab" class="tab_content">
+                <div id='calendar'>{% include 'task_management/calendar.html' %}</div>
+            </div>
+            <div id="documents" class="tab_content">
+                {% include 'task_management/documents.html' %}
+            </div>
+        </div>
+
+        <!-- Include the Create Project Modal -->
+        {% include 'project_page/addmembermodal.html' %}
+    </div>
+
+    <!-- Delete Project Modal -->
+    {% include 'project_page/deleteprojectmodal.html' %}
+
+    <!-- Update Project Modal -->
+    {% include 'project_page/updateprojectmodal.html' %}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,151 @@
+<div class="search-box">
+    {% load static %}
+    <input type="search" class="search-bar" placeholder="Search..." id="searchBar">
+    <img src="{% static 'images/notification.png' %}" alt="Notifications" class="notification-icon">
+    <div id="searchResults" class="search-results"></div>
+</div>
+
+<style>
+    .search-box {
+        display: flex;
+        align-items: center; /* Center items vertically */
+        padding: 10px; /* Adjust padding */
+        background-color: #D9D9D9; /* Background color for the search bar */
+        width: 99%; /* Full width */
+        position: fixed; /* Stay at the top even when scrolling */
+        top: 0;
+        left: 0;
+        z-index: 1; /* Keep the search bar above other elements */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for better visibility */
+        justify-content: space-between; /* Space between search bar and notification icon */
+    }
+
+    .search-bar {
+        max-width: 550px; /* Set a maximum width for the search bar */
+        min-width: 10px; /* Minimum width for the search bar */
+        width: 100%; /* Full width of the space available */
+        padding: 10px 40px; /* Space for text and icon */
+        background-color: #A49898; /* Set a color to check visibility */
+        color: black;
+        border: none;
+        border-radius: 5px; /* Rounded corners */
+        margin: 0 auto; /* Center the search bar in the available space */
+
+        /* Background image for the search icon */
+        background-image: url('/static/images/search.png'); /* Use the correct path */
+        background-repeat: no-repeat; /* Prevent repeating of the icon */
+        background-position: 10px center; /* Position the icon inside the input */
+        background-size: 20px 20px; /* Adjust the size of the icon */
+    }
+
+    .search-bar::placeholder {
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .notification-icon {
+        width: 24px; /* Icon size */
+        height: 24px; /* Icon size */
+        cursor: pointer; /* Change cursor to pointer */
+        margin-right: 10px;
+    }
+
+    .search-results {
+        position: absolute;
+        top: 50px; /* Adjust to avoid overlap with the fixed search bar */
+        left: 10px;
+        right: 10px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 2; /* Ensure it appears above other elements */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow for better visibility */
+    }
+
+    .search-result-item {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+    }
+
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-result-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .search-bar {
+            padding: 10px 20px; /* Adjust padding for smaller screens */
+        }
+        
+        .notification-icon {
+            margin-left: 10px; /* Space between search bar and notification icon */
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const searchBar = document.getElementById('searchBar');
+    const searchResults = document.getElementById('searchResults');
+    let searchTimeout = null;
+
+    searchBar.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = searchBar.value.trim();
+
+        if (query.length > 0) {
+            searchTimeout = setTimeout(() => {
+                fetchProjects(query);
+            }, 300); // Delay to avoid too many requests
+        } else {
+            searchResults.innerHTML = ''; // Clear results if query is empty
+        }
+    });
+
+    function fetchProjects(query) {
+        console.log('Fetching projects for query:', query); // Debugging statement
+        fetch(`/search_projects/?q=${encodeURIComponent(query)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Projects fetched:', data); // Debugging statement
+                displaySearchResults(data.projects);
+            })
+            .catch(error => {
+                console.error('Error fetching projects:', error);
+            });
+    }
+
+    function displaySearchResults(projects) {
+        searchResults.innerHTML = '';
+
+        if (projects.length === 0) {
+            searchResults.innerHTML = '<p>No projects found.</p>';
+            return;
+        }
+
+        projects.forEach(project => {
+            const projectItem = document.createElement('div');
+            projectItem.classList.add('search-result-item');
+            projectItem.innerHTML = `
+                <h3>${project.title}</h3>
+                <p>${project.description}</p>
+            `;
+            projectItem.addEventListener('click', () => {
+                window.location.href = `/projects/${project.id}/`; // Redirect to project detail page
+            });
+            searchResults.appendChild(projectItem);
+        });
+    }
+});
+</script>

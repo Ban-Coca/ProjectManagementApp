@@ -1,0 +1,488 @@
+<!-- Add Member Modal -->
+<div id="addMemberModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add a New Member</h3>
+            <span class="close" aria-label="Close modal">&times;</span>
+        </div>
+        <div class="member-invite-container">
+            <div class="search-member">
+                <input type="text" id="search-input" placeholder="Search users to add..." class="search-input" autocomplete="off">
+                <button class="clear-button" aria-label="Clear search">×</button>
+            </div>
+
+            <div class="members-section">
+                <div id="members-list">
+                    <!-- Members will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Member Confirmation Modal -->
+<div id="removeMemberModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Removal</h3>
+            <span class="close" aria-label="Close modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to remove this member?</p>
+            <div class="modal-actions">
+                <button id="removeConfirmBtn" class="confirm-btn">Yes, Remove</button>
+                <button id="removeCancelBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- JavaScript -->
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+        const addMemberButton = document.getElementById('addMemberButton');
+        const addMemberModal = document.getElementById('addMemberModal');
+        const closeModalBtn = addMemberModal.querySelector('.close');
+        const searchInput = document.getElementById('search-input');
+        const membersList = document.getElementById('members-list');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let searchTimeout;
+
+        const projectId = addMemberButton.getAttribute('data-project-id');
+
+        const API_ENDPOINTS = {
+            members: `/projects/${projectId}/members/`,
+            addMember: `/projects/${projectId}/add-member/`,
+            searchUsers: (query) => `/projects/${projectId}/search-users/?q=${encodeURIComponent(query)}`
+        };
+
+        function openModal() {
+            addMemberModal.style.display = 'flex';
+            addMemberModal.setAttribute('aria-hidden', 'false');
+            loadProjectMembers();  // Load members when the modal opens
+        }
+
+        function closeModal() {
+            addMemberModal.style.display = 'none';
+            addMemberModal.setAttribute('aria-hidden', 'true');
+            searchInput.value = '';
+            membersList.innerHTML = '';
+            location.reload();  // Refresh the page when the modal is closed
+        }
+
+        addMemberButton.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('click', function (event) {
+            if (event.target === addMemberModal) closeModal();
+        });
+
+        // Clear search input when clicking the close button (X)
+        const closeButton = document.querySelector('.clear-button');
+        closeButton.addEventListener('click', () => {
+            searchInput.value = '';  // Clear the search input
+            loadProjectMembers();  // Reload project members
+        });
+        
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+
+            const searchTerm = e.target.value.trim();
+            if (!searchTerm) {
+                loadProjectMembers();
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                membersList.innerHTML = '<div class="loading">Searching users...</div>';
+                try {
+                    const response = await fetch(API_ENDPOINTS.searchUsers(searchTerm));
+                    if (!response.ok) throw new Error('Search failed');
+                    const users = await response.json();
+
+                    let resultsHTML = '<h4>Search Results</h4>';
+                    if (users.length === 0) {
+                        resultsHTML += '<div class="no-results">No users found</div>';
+                    } else {
+                        users.forEach(user => {
+                            resultsHTML += `
+                                <div class="member-item">
+                                    <div class="member-avatar">
+                                        <span class="avatar-text">${user.username.slice(0, 2).toUpperCase()}</span>
+                                    </div>
+                                    <div class="member-info">
+                                        <span class="member-name">${user.username}</span>
+                                        {% if user.role %}
+                                        <span class="member-role">{{ user.role }}</span>
+                                        {% else %}
+                                        <span class="member-role"></span>
+                                        {% endif %}
+                                    </div>
+                                    <button class="add-user-btn" aria-label="Add user" data-user-id="${user.id}">Add</button>
+                                </div>
+                            `;
+                        });
+                    }
+                    membersList.innerHTML = resultsHTML;
+                } catch (error) {
+                    console.error('Error searching users:', error);
+                    membersList.innerHTML = '<div class="error">Search failed. Please try again.</div>';
+                }
+            }, 300);
+        });
+
+        async function loadProjectMembers() {
+            membersList.innerHTML = '<div class="loading">Loading members...</div>';
+            try {
+                const response = await fetch(API_ENDPOINTS.members);
+                if (!response.ok) throw new Error('Failed to load members');
+                const members = await response.json();
+
+                let membersHTML = '<h4>Project Members</h4>';
+                if (members.length === 0) {
+                    membersHTML += '<div class="no-results">No members yet</div>';
+                } else {
+                    members.forEach(member => {
+                        membersHTML += `
+                            <div class="member-item">
+                                <div class="member-avatar">
+                                    <span class="avatar-text">${member.username.slice(0, 2).toUpperCase()}</span>
+                                </div>
+                                <div class="member-info">
+                                    <span class="member-name">${member.username}</span>
+                                    <span class="member-role">${member.role}</span>
+                                </div>
+                                <button class="remove-user-btn" data-user-id="${member.id}" aria-label="Remove user">Remove</button>
+                            </div>
+                        `;
+                    });
+                }
+                membersList.innerHTML = membersHTML;
+            } catch (error) {
+                console.error('Error loading members:', error);
+                membersList.innerHTML = '<div class="error">Failed to load members. Please try again.</div>';
+            }
+        }
+
+        // Event listener for the "Add user" button
+        membersList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-user-btn')) {
+                const userId = e.target.getAttribute('data-user-id');
+                const button = e.target;
+
+                button.textContent = 'Adding...';
+                button.disabled = true;
+
+                // Fetch request to add the user to the project
+                fetch(API_ENDPOINTS.addMember, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,  // Ensure this ID corresponds to an existing user
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('User added:', data);
+                    loadProjectMembers();  // Refresh members after adding the user
+                })
+                .catch(error => {
+                    console.error('Error adding user:', error);
+                    button.textContent = 'Add';
+                    button.disabled = false;
+                });
+            }
+
+            // Confirming user removal
+            if (e.target.classList.contains('remove-user-btn')) {
+                const userId = e.target.getAttribute('data-user-id');
+                const removeMemberModal = document.getElementById('removeMemberModal');
+                const removeConfirmBtn = document.getElementById('removeConfirmBtn');
+                const removeCancelBtn = document.getElementById('removeCancelBtn');
+
+                removeMemberModal.style.display = 'flex';
+                removeMemberModal.setAttribute('aria-hidden', 'false');
+
+                removeConfirmBtn.addEventListener('click', () => {
+                    fetch(`/projects/${projectId}/remove-member/`, {
+                        method: 'DELETE',  // Corrected to DELETE for removing members
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: JSON.stringify({
+                            user_id: userId, // Ensure this ID corresponds to the member to be removed
+                        }),
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('User removed:', data);
+                        loadProjectMembers(); // Refresh the member list after removal
+                        removeMemberModal.style.display = 'none'; // Close confirmation modal
+                    })
+                    .catch(error => {
+                        console.error('Error removing user:', error);
+                    });
+                });
+
+                removeCancelBtn.addEventListener('click', () => {
+                    removeMemberModal.style.display = 'none'; // Close confirmation modal
+                });
+            }
+        });
+    });
+</script>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        height: 50%;
+        background-color: #fff;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 80vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    .close {
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #666;
+    }
+
+    .member-invite-container {
+        padding: 20px;
+    }
+
+    .search-member {
+        background: #f5f5f5;
+        border-radius: 6px;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 8px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .clear-button{
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 4px 8px;
+    }
+
+    .members-section {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .members-list {
+        padding: 0 10px;
+    }
+
+    .members-list h4 {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 20px 0 10px;
+    }
+
+    .member-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        transition: background-color 0.2s;
+    }
+
+    .member-item:hover {
+        background-color: #f5f5f5;
+    }
+
+    .member-avatar {
+        width: 36px;
+        height: 36px;
+        background: #6b6b6b;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+    }
+
+    .avatar-text {
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .member-info {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        flex: 1;
+    }
+
+    .member-name {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .member-role {
+        display: block;
+        font-size: 12px;
+        color: #666;
+        
+    }
+
+    .add-user-btn {
+        padding: 6px 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background-color 0.2s;
+    }
+
+    .add-user-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .loading {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-size: 14px;
+    }
+
+    .error {
+        text-align: center;
+        padding: 20px;
+        color: red;
+        font-size: 14px;
+    }
+
+    .remove-user-btn{
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.remove-user-btn:hover{
+    background-color: #e53935;
+}
+
+#removeMemberModal .modal-content {
+    width: 90%;
+    max-width: 400px;
+}
+
+#removeMemberModal .modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+#removeMemberModal .confirm-btn {
+    background-color: #d9534f;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+#removeMemberModal .confirm-btn:hover {
+    background-color: #c9302c;
+}
+
+#removeMemberModal button.cancel-btn {
+    background-color: #5bc0de;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+}
+
+#removeMemberModal button.cancel-btn:hover {
+    background-color: #31b0d5;
+}
+
+    /* Scrollbar styling */
+    .members-section::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .members-section::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+
+    .members-section::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>

@@ -1,0 +1,68 @@
+<div id="addTaskModal" class="modal">
+    <div class="task-modal-content">
+        <span class="close">&times;</span>
+        <h2>Create New Task</h2>
+        <form id="addTaskForm">
+            <div id="titleTaskWrapper" class="title">
+                <h3>Task Title</h3>
+                <input type="text" id="taskTitle" placeholder="Task Title" required>
+            </div>
+            
+            <div id="wrapperForDesc" class="desc">
+                <h3>Task Description</h3>
+                <textarea id="taskDescription" placeholder="Task Description" required></textarea>
+            </div>
+            <div type="project_id" class="project">
+                <input type="hidden" 
+                       id="taskProjectId" 
+                       name="taskProjectId" 
+                       value="{{ id }}"
+                       data-project-id="{{ id }}">
+            </div>
+            <div id="members" class="members">
+                <h3>Members</h3>
+                <div class="user-search-container">
+                    <input type="text" 
+                           id="taskAssignee" 
+                           list="users-list" 
+                           autocomplete="off" 
+                           placeholder="Search members..." 
+                           required>
+                    <ul id="users-list" class="dropdown-menu">
+                        <!-- Will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
+
+            <div id="deadlines" class="deadlines">
+                <h3>Deadlines</h3>
+                <input type="date" id="taskDueDate" required>
+            </div>
+            
+            <div id="status" class="status">
+                <h3>Status</h3>
+                <select id="taskStatus" required>
+                    <option value="">Select Status</option>
+                    <option value="TODO">To Do</option>
+                    <option value="INPROGRESS">In Progress</option>
+                    <option value="DONE">Done</option>
+                </select>
+            </div>
+            
+            <div id="priority" class="priorityTasks">
+                <h3>Priority</h3>
+                <select id="taskPriority" required>
+                    <option value="">Select Priority</option>
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High</option>
+                </select>
+            </div>
+            
+            <div id="forbuttons" class="button_add">
+                <button id="addTaskBtn" class="addTaskBtn" type="submit">Add Task</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
