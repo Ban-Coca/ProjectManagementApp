@@ -34,6 +34,10 @@
   <a href="#license">License</a>
 </p>
 
+## Project Description
+
+Our Project Management App is a comprehensive platform designed to streamline team collaboration and project execution. This app empowers users with tools for efficient planning, task management, real-time collaboration, and performance tracking, ensuring successful project delivery from start to finish.
+
 ## Key Features
 
 * Project Planning and Scheduling
@@ -95,18 +99,24 @@ Thanks to these wonderful people:
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/Jeric1231"><img src="https://avatars.githubusercontent.com/u/153045584?v=4" width="100px;" alt="" style="border-radius:50%;object-fit:cover;"/><br /><sub><b>John Eric Lumambas</b></sub></a></td>
-    <td align="center"><a href="https://github.com/manwaaa"><img src="https://avatars.githubusercontent.com/u/153294168?v=4" width="100px;" alt="" style="border-radius:50%;object-fit:cover;"/><br /><sub><b>Manwarul Francis Santos</b></sub></a></td>
-    <td align="center"><a href="https://github.com/Ban-Coca"><img src="https://avatars.githubusercontent.com/u/180009268?v=4" width="100px;" alt="" style="border-radius:50%;object-fit:cover;"/><br /><sub><b>Manwarul Francis Santos</b></sub></a></td>
-    <!-- Add more contributors here -->
+    <td align="center">
+      <a href="https://github.com/Jeric1231">
+        <img src="https://avatars.githubusercontent.com/u/153045584?v=4" width="100px" height="100px" style="border-radius:50%;object-fit:cover;" alt="John Eric Lumambas"/><br />
+        <sub><b>John Eric Lumambas</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/manwaaa">
+        <img src="https://avatars.githubusercontent.com/u/153294168?v=4" width="100px" height="100px" style="border-radius:50%;object-fit:cover;" alt="Manwarul Francis Santos"/><br />
+        <sub><b>Manwarul Francis Santos</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Ban-Coca">
+        <img src="https://avatars.githubusercontent.com/u/180009268?v=4" width="100px" height="100px" style="border-radius:50%;object-fit:cover;" alt="Manwarul Francis Santos"/><br />
+        <sub><b>Manwarul Francis Santos</b></sub>
+      </a>
+    </td>
   </tr>
 </table>
-
-
-## License
-
-MIT
-
----
-
 
