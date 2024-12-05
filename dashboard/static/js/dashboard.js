@@ -67,9 +67,9 @@ function updateProjectTasks(projectId) {
         projectId = 'all';
     }
 
-    const todoPlaceholder = document.querySelector('.to-do');
-    const inProgressPlaceholder = document.querySelector('.in-progress');
-    const completedPlaceholder = document.querySelector('.completed');
+    const todoPlaceholder = document.querySelector('.to-do') || 0;
+    const inProgressPlaceholder = document.querySelector('.in-progress') || 0;
+    const completedPlaceholder = document.querySelector('.completed') || 0;
 
     if (todoPlaceholder && inProgressPlaceholder && completedPlaceholder) {
         todoPlaceholder.classList.add('card-refreshing');
